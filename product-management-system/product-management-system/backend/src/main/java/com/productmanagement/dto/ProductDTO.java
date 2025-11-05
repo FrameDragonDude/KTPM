@@ -2,26 +2,63 @@ package com.productmanagement.dto;
 
 import jakarta.validation.constraints.*;
 
+/**
+ * Data Transfer Object (DTO) cho Product
+ * Sử dụng để transfer data giữa các layer (Controller <-> Service)
+ * Có validation constraints để đảm bảo dữ liệu hợp lệ trước khi xử lý
+ */
 public class ProductDTO {
 
+    /**
+     * ID của sản phẩm (có thể null khi tạo mới)
+     */
     private Long id;
 
+    /**
+     * Tên sản phẩm
+     * - Không được rỗng (message: "Product name is required")
+     * - Độ dài 3-100 ký tự
+     */
     @NotBlank(message = "Product name is required")
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
 
+    /**
+     * Mô tả sản phẩm (không bắt buộc)
+     * - Tối đa 500 ký tự
+     */
     @Size(max = 500, message = "Description must not exceed 500 characters")
     private String description;
 
+    /**
+     * Giá sản phẩm
+     * - Bắt buộc (@NotNull)
+     * - Phải > 0 (@DecimalMin)
+     */
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     private Double price;
 
+    /**
+     * Số lượng sản phẩm
+     * - Phải >= 0 (@Min)
+     */
     @Min(value = 0, message = "Quantity cannot be negative")
     private Integer quantity;
 
+    /**
+     * Constructor mặc định
+     */
     public ProductDTO() {}
 
+    /**
+     * Constructor đầy đủ tham số
+     * @param id ID sản phẩm
+     * @param name Tên sản phẩm
+     * @param description Mô tả
+     * @param price Giá
+     * @param quantity Số lượng
+     */
     public ProductDTO(Long id, String name, String description, Double price, Integer quantity) {
         this.id = id;
         this.name = name;
@@ -30,8 +67,16 @@ public class ProductDTO {
         this.quantity = quantity;
     }
 
-    // Manual Builder for compatibility with existing code/tests
+    /**
+     * Builder Pattern cho ProductDTO
+     * Giúp tạo DTO một cách linh hoạt trong tests và code
+     * Ví dụ: ProductDTO.builder().name("Phone").price(500.0).build()
+     */
     public static Builder builder() { return new Builder(); }
+    
+    /**
+     * Inner Builder class
+     */
     public static class Builder {
         private Long id;
         private String name;
@@ -47,7 +92,7 @@ public class ProductDTO {
         public ProductDTO build() { return new ProductDTO(id, name, description, price, quantity); }
     }
 
-    // Getters / Setters
+    // ==================== Getters / Setters ====================
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
