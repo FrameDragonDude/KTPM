@@ -1,0 +1,166 @@
+.App {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.App-header h1 {
+  margin: 0 0 20px 0;
+}
+
+.App-header nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.App-header button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #61dafb;
+  color: #282c34;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.App-header button:hover {
+  background-color: #4fc3dc;
+}
+
+main {
+  padding: 20px;
+}
+
+/* ProductList styles */
+.product-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.product-list th,
+.product-list td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.product-list th {
+  background-color: #282c34;
+  color: white;
+}
+
+.product-list tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.product-list button {
+  padding: 5px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-list button:hover {
+  background-color: #c82333;
+}
+
+/* ProductForm styles */
+.product-form {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.product-form .form-group {
+  margin-bottom: 20px;
+}
+
+.product-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.product-form input,
+.product-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.product-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.product-form button[type="submit"] {
+  padding: 10px 30px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.product-form button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+.product-form button[type="submit"]:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.product-form .error {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
+
+/* ProductDetail styles */
+.product-detail {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.product-detail .detail-row {
+  display: flex;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.product-detail .detail-row:last-child {
+  border-bottom: none;
+}
+
+.product-detail .detail-row strong {
+  width: 150px;
+  color: #282c34;
+}
+
+.product-detail .detail-row span {
+  flex: 1;
+}
