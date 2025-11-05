@@ -1,46 +1,71 @@
 package com.productmanagement.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.productmanagement.dto.ProductDTO;
-import com.productmanagement.service.ProductService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RestController
-@RequestMapping("/api/products")
-@CrossOrigin(origins = "*")
-@RequiredArgsConstructor
-public class ProductController {
+@SpringBootTest
+@AutoConfigureMockMvc
+class ProductControllerTest {
 
-    private final ProductService productService;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO dto) {
-        return new ResponseEntity<>(productService.createProduct(dto), HttpStatus.CREATED);
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private ProductDTO sample;
+
+    @BeforeEach
+    void setUp() {
+        sample = ProductDTO.builder()
+                .name("Phone")
+                .description("Nice phone")
+                .price(199.99)
+                .quantity(5)
+                .build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    @Test
+    @DisplayName("Integration: Create and fetch product")
+    void createAndFetch() throws Exception {
+        // Create
+        String json = objectMapper.writeValueAsString(sample);
+        String location = mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.name", is("Phone")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        ProductDTO created = objectMapper.readValue(location, ProductDTO.class);
+
+        // Get by id
+        mockMvc.perform(get("/api/products/{id}", created.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(created.getId().intValue())))
+                .andExpect(jsonPath("$.name", is("Phone")));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
-        return ResponseEntity.ok(productService.updateProduct(id, dto));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+    @Test
+    @DisplayName("Integration: List products")
+    void listProducts() throws Exception {
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 }

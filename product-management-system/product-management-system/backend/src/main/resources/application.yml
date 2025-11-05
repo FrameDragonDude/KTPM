@@ -1,7 +1,7 @@
-server:
-  port: 8080
-
 spring:
+  config:
+    activate:
+      on-profile: mysql
   datasource:
     url: jdbc:mysql://localhost:3306/product_management
     username: root
@@ -17,4 +17,5 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicTypeDescriptor: TRACE
 
-# Other configurations can be added as needed.
+# Note: By default we use H2 defined in application.properties.
+# These MySQL settings are only active when profile 'mysql' is enabled.

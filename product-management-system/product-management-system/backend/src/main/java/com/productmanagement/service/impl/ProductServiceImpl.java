@@ -4,7 +4,6 @@ import com.productmanagement.dto.ProductDTO;
 import com.productmanagement.model.Product;
 import com.productmanagement.repository.ProductRepository;
 import com.productmanagement.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     @Transactional
