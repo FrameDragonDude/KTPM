@@ -5,6 +5,11 @@ node/
 # Testing
 coverage/
 
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
 # Production
 build/
 
