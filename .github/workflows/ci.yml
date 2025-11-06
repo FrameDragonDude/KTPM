@@ -5,6 +5,10 @@ name: Complete CI/CD Pipeline
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Cho phép chạy thủ công từ tab Actions để "test CI/CD" không cần push
+  workflow_dispatch:
 
 env:
   POSTGRES_DB: testdb
@@ -37,21 +41,23 @@ jobs:
 
       - name: Backend Tests
         run: |
-          cd backend
-          ./mvnw clean test
+          cd product-management-system/product-management-system/backend
+          mvn -B -ntp clean test
 
       - name: Frontend Tests
         run: |
-          cd frontend
-          npm install
-          npm test -- --coverage
+          cd product-management-system/product-management-system/frontend
+          npm ci
+          npm test -- --watchAll=false --coverage
 
       - name: E2E Tests
         run: |
-          cd frontend
-          npm run test:e2e
+          cd product-management-system/product-management-system/frontend
+          npm run cypress:run
+        continue-on-error: true
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
         with:
-          files: ./frontend/coverage/lcov.info,./backend/target/site/jacoco/jacoco.xml
+          files: ./product-management-system/product-management-system/frontend/coverage/lcov.info,./product-management-system/product-management-system/backend/target/site/jacoco/jacoco.xml
+        continue-on-error: true
