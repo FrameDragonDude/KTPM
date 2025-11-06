@@ -7,7 +7,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  # Cho phép chạy thủ công từ tab Actions để "test CI/CD" không cần push
+  # Cho phép chạy thủ công từ tab Actions để "test CI/CD" không cần push, nó là tự động
   workflow_dispatch:
 
 env:
