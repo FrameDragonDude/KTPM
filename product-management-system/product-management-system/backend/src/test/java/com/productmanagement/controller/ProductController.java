@@ -15,12 +15,11 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.productmanagement.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+ 
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductControllerTest {
+class ProductControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
