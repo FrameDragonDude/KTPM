@@ -13,6 +13,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import productService from '../services/productService';
+import { validateProduct } from '../utils/validation';
 
 const ProductForm = ({ productId, onSuccess }) => {
   // State quản lý form data
@@ -68,20 +69,11 @@ const ProductForm = ({ productId, onSuccess }) => {
    * @returns {boolean} true nếu valid, false nếu có lỗi
    */
   const validate = () => {
-    const errors = {};
-    
-    if (!formData.name || formData.name.length < 3) {
-      errors.name = 'Name must be at least 3 characters';
-    }
-    
-    if (!formData.price || formData.price <= 0) {
-      errors.price = 'Price must be greater than 0';
-    }
-    
-    if (formData.quantity < 0) {
-      errors.quantity = 'Quantity cannot be negative';
-    }
-
+    const errors = validateProduct({
+      name: formData.name,
+      price: formData.price,
+      quantity: formData.quantity,
+    });
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
