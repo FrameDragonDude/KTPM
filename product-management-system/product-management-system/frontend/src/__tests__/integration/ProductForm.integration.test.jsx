@@ -137,7 +137,7 @@ describe('ProductForm Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('quantity-error')).toBeInTheDocument();
-      expect(screen.getByText('Quantity cannot be negative')).toBeInTheDocument();
+      expect(screen.getByText('Quantity must be an integer and not negative')).toBeInTheDocument();
     });
 
     expect(productService.createProduct).not.toHaveBeenCalled();
