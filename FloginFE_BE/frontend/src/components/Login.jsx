@@ -6,6 +6,7 @@ const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,7 +37,24 @@ const Login = ({ onLogin }) => {
         </div>
         <div className="login-group">
           <label>Mật khẩu</label>
-          <input type="password" placeholder="Nhập mật khẩu của bạn" value={password} onChange={e => setPassword(e.target.value)} />
+          <div style={{position:'relative'}}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Nhập mật khẩu của bạn"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              style={{paddingRight:32}}
+            />
+            <button
+              type="button"
+              style={{position:'absolute',right:6,top:6,border:'none',background:'none',cursor:'pointer',fontSize:18,color:'#6c7a89'}}
+              onClick={()=>setShowPassword(v=>!v)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+            >
+              {showPassword ? '🙈' : '👁️'}
+            </button>
+          </div>
         </div>
         <div className="login-options">
           <label>
