@@ -10,4 +10,5 @@ export const formatCurrencyVND = (n) =>
 export const formatNumber = (n) =>
   new Intl.NumberFormat('vi-VN').format(Number(n) || 0);
 
-export default { formatCurrencyVND, formatNumber };
+const formatUtils = { formatCurrencyVND, formatNumber };
+export default formatUtils;

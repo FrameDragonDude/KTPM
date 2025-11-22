@@ -25,9 +25,10 @@ export const validateProduct = (p) => {
   return errors;
 };
 
-export default {
+const validationUtils = {
   isNonEmpty,
   isPositiveNumber,
   isNonNegativeInt,
   validateProduct,
 };
+export default validationUtils;
