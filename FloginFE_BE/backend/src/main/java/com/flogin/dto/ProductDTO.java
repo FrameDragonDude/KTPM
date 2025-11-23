@@ -47,25 +47,31 @@ public class ProductDTO {
     private Integer quantity;
 
     /**
-     * Constructor mặc định
+     * Danh mục sản phẩm
      */
+    private String category;
+
     public ProductDTO() {}
 
-    /**
-     * Constructor đầy đủ tham số
-     * @param id ID sản phẩm
-     * @param name Tên sản phẩm
-     * @param description Mô tả
-     * @param price Giá
-     * @param quantity Số lượng
-     */
-    public ProductDTO(Long id, String name, String description, Double price, Integer quantity) {
+    public ProductDTO(Long id, String name, String description, Double price, Integer quantity, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
+        this.category = category;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    // Giữ lại constructor cũ để không lỗi code cũ
+    // Đã có constructor đầy đủ category, xóa bản không có category để tránh duplicate
 
     /**
      * Builder Pattern cho ProductDTO
@@ -83,13 +89,15 @@ public class ProductDTO {
         private String description;
         private Double price;
         private Integer quantity;
+        private String category;
 
         public Builder id(Long id) { this.id = id; return this; }
         public Builder name(String name) { this.name = name; return this; }
         public Builder description(String description) { this.description = description; return this; }
         public Builder price(Double price) { this.price = price; return this; }
         public Builder quantity(Integer quantity) { this.quantity = quantity; return this; }
-        public ProductDTO build() { return new ProductDTO(id, name, description, price, quantity); }
+        public Builder category(String category) { this.category = category; return this; }
+        public ProductDTO build() { return new ProductDTO(id, name, description, price, quantity, category); }
     }
 
     // ==================== Getters / Setters ====================

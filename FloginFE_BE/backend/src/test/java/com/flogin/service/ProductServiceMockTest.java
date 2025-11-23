@@ -32,10 +32,11 @@ class ProductServiceMockTest {
     void testGetProductById() {
         Product mockProduct = Product.builder()
                 .id(1L)
-                .name("Laptop")
-                .description("High-end laptop")
-                .price(15000000.0)
-                .quantity(10)
+                .name("Đồng hồ thông minh")
+                .description("Theo dõi sức khỏe với cảm biến nhịp tim")
+                .price(199.99)
+                .quantity(32)
+                .category("Điện tử")
                 .build();
 
         when(productRepository.findById(1L))
@@ -54,21 +55,23 @@ class ProductServiceMockTest {
     @DisplayName("Mock: Test createProduct")
     void testCreateProduct() {
         Product mockProduct = Product.builder()
-                .id(1L)
-                .name("Mouse")
-                .description("Wireless mouse")
-                .price(200000.0)
-                .quantity(10)
+                .id(2L)
+                .name("Giá đỡ laptop")
+                .description("Giá đỡ laptop nhôm ergonomic")
+                .price(49.99)
+                .quantity(78)
+                .category("Phụ kiện")
                 .build();
 
         when(productRepository.save(any(Product.class)))
                 .thenReturn(mockProduct);
 
         ProductDTO productDTO = ProductDTO.builder()
-                .name("Mouse")
-                .description("Wireless mouse")
-                .price(200000.0)
-                .quantity(10)
+                .name("Giá đỡ laptop")
+                .description("Giá đỡ laptop nhôm ergonomic")
+                .price(49.99)
+                .quantity(78)
+                .category("Phụ kiện")
                 .build();
 
         ProductDTO result = productService.createProduct(productDTO);
@@ -84,11 +87,12 @@ class ProductServiceMockTest {
     @DisplayName("Mock: Verify findById interaction")
     void testFindByIdInteraction() {
         Product mockProduct = Product.builder()
-                .id(1L)
-                .name("Keyboard")
-                .description("Mechanical keyboard")
-                .price(500000.0)
-                .quantity(15)
+                .id(3L)
+                .name("Tai nghe không dây")
+                .description("Tai nghe chống ồn cao cấp")
+                .price(299.99)
+                .quantity(45)
+                .category("Điện tử")
                 .build();
 
         when(productRepository.findById(1L))

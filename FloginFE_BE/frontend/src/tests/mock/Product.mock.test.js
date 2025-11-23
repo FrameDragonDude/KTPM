@@ -1,53 +1,55 @@
-import productService from '../../services/productService';
-
+import ProductService from '../../services/productService';
 jest.mock('../../services/productService');
 
-describe('Product Mock Tests', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+// 5.2.1a - Mock CRUD operations
+describe('5.2.1a - Mock CRUD operations', () => {
+  it('should call create, read, update, delete', async () => {
+    ProductService.create.mockResolvedValue({ id: 1 });
+    ProductService.getAll.mockResolvedValue([{ id: 1 }]);
+    ProductService.update.mockResolvedValue({ id: 1, name: 'Updated' });
+    ProductService.delete.mockResolvedValue({});
+
+    await ProductService.create({ name: 'Test' });
+    await ProductService.getAll();
+    await ProductService.update(1, { name: 'Updated' });
+    await ProductService.delete(1);
+
+    expect(ProductService.create).toHaveBeenCalledWith({ name: 'Test' });
+    expect(ProductService.getAll).toHaveBeenCalled();
+    expect(ProductService.update).toHaveBeenCalledWith(1, { name: 'Updated' });
+    expect(ProductService.delete).toHaveBeenCalledWith(1);
   });
+});
 
-  // a) Mock CRUD operations (1.5 điểm)
-  test('Mock: Create product thanh cong', async () => {
-    const mockProduct = {
-      id: 1,
-      name: 'Laptop',
-      price: 15000000
-    };
-
-    productService.createProduct.mockResolvedValue(mockProduct);
-
-    const result = await productService.createProduct({
-      name: 'Laptop',
-      price: 15000000
-    });
-
-    expect(productService.createProduct).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockProduct);
+// 5.2.1b - Success and failure scenarios
+describe('5.2.1b - Success and failure scenarios', () => {
+  it('should handle success', async () => {
+    ProductService.create.mockResolvedValue({ id: 1 });
+    const res = await ProductService.create({ name: 'Test' });
+    expect(res.id).toBe(1);
   });
-
-  // b) Test success và failure scenarios (0.5 điểm)
-  test('Mock: Get products with pagination', async () => {
-    const mockProducts = [
-      { id: 1, name: 'Product 1', price: 100 },
-      { id: 2, name: 'Product 2', price: 200 }
-    ];
-
-    productService.getAllProducts.mockResolvedValue(mockProducts);
-
-    const result = await productService.getAllProducts();
-
-    expect(productService.getAllProducts).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockProducts);
+  it('should handle failure', async () => {
+    ProductService.create.mockRejectedValue(new Error('Create failed'));
+    await expect(ProductService.create({ name: 'Test' })).rejects.toThrow('Create failed');
   });
+});
 
-  // c) Verify all mock calls (0.5 điểm)
-  test('Mock: Verify deleteProduct calls', async () => {
-    productService.deleteProduct.mockResolvedValue();
+// 5.2.1c - Verify all mock calls
+describe('5.2.1c - Verify all mock calls', () => {
+  it('should verify all CRUD calls', async () => {
+    ProductService.create.mockResolvedValue({});
+    ProductService.getAll.mockResolvedValue([]);
+    ProductService.update.mockResolvedValue({});
+    ProductService.delete.mockResolvedValue({});
 
-    await productService.deleteProduct(1);
+    await ProductService.create({});
+    await ProductService.getAll();
+    await ProductService.update(1, {});
+    await ProductService.delete(1);
 
-    expect(productService.deleteProduct).toHaveBeenCalledTimes(1);
-    expect(productService.deleteProduct).toHaveBeenCalledWith(1);
+    expect(ProductService.create).toHaveBeenCalledTimes(1);
+    expect(ProductService.getAll).toHaveBeenCalledTimes(1);
+    expect(ProductService.update).toHaveBeenCalledTimes(1);
+    expect(ProductService.delete).toHaveBeenCalledTimes(1);
   });
 });

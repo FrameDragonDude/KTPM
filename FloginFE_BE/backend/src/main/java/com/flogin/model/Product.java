@@ -60,6 +60,22 @@ public class Product {
     private Integer quantity = 0;
 
     /**
+     * Danh mục sản phẩm
+     */
+    @Column(length = 100)
+    private String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    // ...existing code...
+
+    /**
      * Constructor mặc định (required by JPA)
      */
     public Product() {}
@@ -96,6 +112,7 @@ public class Product {
         private String description;
         private Double price;
         private Integer quantity;
+        private String category;
 
         /** Set ID và return Builder để tiếp tục chuỗi */
         public Builder id(Long id) { this.id = id; return this; }
@@ -107,8 +124,19 @@ public class Product {
         public Builder price(Double price) { this.price = price; return this; }
         /** Set quantity và return Builder để tiếp tục chuỗi */
         public Builder quantity(Integer quantity) { this.quantity = quantity; return this; }
+        /** Set category và return Builder để tiếp tục chuỗi */
+        public Builder category(String category) { this.category = category; return this; }
         /** Build và return Product object với các giá trị đã set */
-        public Product build() { return new Product(id, name, description, price, quantity); }
+        public Product build() {
+            Product product = new Product();
+            product.setId(id);
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setQuantity(quantity);
+            product.setCategory(category);
+            return product;
+        }
     }
 
     // ==================== Getters / Setters ====================
