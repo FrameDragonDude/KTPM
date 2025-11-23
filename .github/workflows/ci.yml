@@ -39,9 +39,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: 'product-management-system/product-management-system/frontend/package-lock.json'
+            node-version: '18'
+            cache: 'npm'
+            cache-dependency-path: 'KTPM/FloginFE_BE/frontend/package-lock.json'
 
       - name: Backend Tests
         run: |
