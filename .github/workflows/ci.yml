@@ -41,27 +41,27 @@ jobs:
         with:
             node-version: '18'
             cache: 'npm'
-            cache-dependency-path: 'KTPM/FloginFE_BE/frontend/package-lock.json'
+            cache-dependency-path: 'FloginFE_BE/frontend/package-lock.json'
 
       - name: Backend Tests
         run: |
-          cd product-management-system/product-management-system/backend
+          cd FloginFE_BE/backend
           mvn -B -ntp clean test
 
       - name: Frontend Tests
         run: |
-          cd product-management-system/product-management-system/frontend
+          cd FloginFE_BE/frontend
           npm ci
           npm test -- --watchAll=false --coverage
 
       - name: E2E Tests
         run: |
-          cd product-management-system/product-management-system/frontend
+          cd FloginFE_BE/frontend
           npm run cypress:run
         continue-on-error: true
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
         with:
-          files: ./product-management-system/product-management-system/frontend/coverage/lcov.info,./product-management-system/product-management-system/backend/target/site/jacoco/jacoco.xml
+          files: ./FloginFE_BE/frontend/coverage/lcov.info,./FloginFE_BE/backend/target/site/jacoco/jacoco.xml
         continue-on-error: true
