@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import Product from '../components/Product';
+import Product from '../../components/Product';
 jest.mock('axios');
 
 // 4.2.1a - Product List Integration
