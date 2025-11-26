@@ -45,7 +45,7 @@ class ProductServiceMockTest {
         ProductDTO result = productService.getProductById(1L);
 
         assertNotNull(result);
-        assertEquals("Laptop", result.getName());
+        assertEquals("Đồng hồ thông minh", result.getName());
 
         verify(productRepository).findById(1L);
     }
@@ -77,7 +77,7 @@ class ProductServiceMockTest {
         ProductDTO result = productService.createProduct(productDTO);
 
         assertNotNull(result);
-        assertEquals("Mouse", result.getName());
+        assertEquals("Giá đỡ laptop", result.getName());
 
         verify(productRepository).save(any(Product.class));
     }
