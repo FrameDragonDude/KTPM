@@ -29,10 +29,10 @@ public class ProductControllerIntegrationTest {
     void testCreateProduct() throws Exception {
   String productJson = "{" +
     "\"name\":\"Test\"," +
-    "\"desc\":\"Desc\"," +
+    "\"description\":\"Desc\"," +
     "\"category\":\"Cat\"," +
     "\"price\":99," +
-    "\"stock\":5}";
+    "\"quantity\":5}";
   mockMvc.perform(post("/api/products")
     .contentType(MediaType.APPLICATION_JSON)
     .content(productJson))
@@ -62,9 +62,12 @@ public class ProductControllerIntegrationTest {
     @Test
     @DisplayName("4.2.2d - Update Product")
     void testUpdateProduct() throws Exception {
-  String updateJson = "{" +
-    "\"name\":\"Updated\"," +
-    "\"price\":100}";
+String updateJson = "{" +
+  "\"name\":\"Updated\"," +
+  "\"description\":\"Desc\"," +
+  "\"category\":\"Cat\"," +
+  "\"price\":100," +
+  "\"quantity\":10}";
   mockMvc.perform(put("/api/products/1")
     .contentType(MediaType.APPLICATION_JSON)
     .content(updateJson))

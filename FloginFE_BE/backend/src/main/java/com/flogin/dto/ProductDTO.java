@@ -100,7 +100,7 @@ public class ProductDTO {
         public ProductDTO build() { return new ProductDTO(id, name, description, price, quantity, category); }
     }
 
-    // ==================== Getters / Setters ====================
+    // Get/ set
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }

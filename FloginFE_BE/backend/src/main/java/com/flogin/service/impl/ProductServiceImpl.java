@@ -45,11 +45,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProduct(ProductDTO dto) {
         // Chuyển DTO thành Entity
         Product product = Product.builder()
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .price(dto.getPrice())
-                .quantity(dto.getQuantity())
-                .build();
+            .name(dto.getName())
+            .description(dto.getDescription())
+            .price(dto.getPrice())
+            .quantity(dto.getQuantity())
+            .category(dto.getCategory())
+            .build();
         // Save vào database và chuyển kết quả thành DTO
         return toDTO(productRepository.save(product));
     }
@@ -103,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
         p.setDescription(dto.getDescription());
         p.setPrice(dto.getPrice());
         p.setQuantity(dto.getQuantity());
+        p.setCategory(dto.getCategory());
         // Save và return DTO
         return toDTO(productRepository.save(p));
     }
@@ -134,11 +136,12 @@ public class ProductServiceImpl implements ProductService {
      */
     private ProductDTO toDTO(Product p) {
         return ProductDTO.builder()
-                .id(p.getId())
-                .name(p.getName())
-                .description(p.getDescription())
-                .price(p.getPrice())
-                .quantity(p.getQuantity())
-                .build();
+            .id(p.getId())
+            .name(p.getName())
+            .description(p.getDescription())
+            .price(p.getPrice())
+            .quantity(p.getQuantity())
+            .category(p.getCategory())
+            .build();
     }
 }

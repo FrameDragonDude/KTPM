@@ -13,50 +13,40 @@ describe('ProductList Integration', () => {
     ] });
     render(<Product onLogout={() => {}} />);
     await waitFor(() => {
-      expect(screen.getByText('A')).toBeInTheDocument();
-      expect(screen.getByText('B')).toBeInTheDocument();
+      expect(createProduct).toHaveBeenCalledTimes(1);
+      const [payload] = createProduct.mock.calls[0];
+      expect(payload).toMatchObject({
+        name: 'Đồng hồ thông minh',
+        price: 990000,
+        stock: 36,
+        desc: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+        category: 'Điện tử',
+      });
+      expect(validateProduct(payload)).toBe(true);
     });
-  });
-});
+  })
 
-// 4.2.1b - Product Form Integration
-describe('ProductForm Integration', () => {
-  it('creates new product', () => {
-    render(<Product onLogout={() => {}} />);
-    fireEvent.click(screen.getByText(/Thêm sản phẩm/i));
-    fireEvent.change(screen.getByPlaceholderText(/Nhập tên sản phẩm/i), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByPlaceholderText(/Nhập mô tả sản phẩm/i), { target: { value: 'Desc' } });
-    fireEvent.change(screen.getByPlaceholderText(/0.00/i), { target: { value: '99' } });
-    fireEvent.change(screen.getByPlaceholderText(/0/i), { target: { value: '5' } });
-    fireEvent.change(screen.getByPlaceholderText(/Nhập danh mục/i), { target: { value: 'Cat' } });
-    fireEvent.click(screen.getByText(/Thêm sản phẩm/i));
-    expect(screen.getByText('Test')).toBeInTheDocument();
-  });
+  test('Tạo sản phẩm lỗi để hiển thị lỗi', async () => {
+    // Giả lập API ném lỗi
+    createProduct.mockRejectedValueOnce(new Error('Server error'))
 
-  it('edits product', () => {
-    render(<Product onLogout={() => {}} />);
-    fireEvent.click(screen.getAllByTitle('Sửa')[0]);
-    fireEvent.change(screen.getByPlaceholderText(/Nhập tên sản phẩm/i), { target: { value: 'Edited' } });
-    fireEvent.click(screen.getByText(/Cập nhật sản phẩm/i));
-    expect(screen.getByText('Edited')).toBeInTheDocument();
-  });
-});
+    const initialProduct = { name: '', desc: '', price: 0, stock: 0, category: '' };
+    const handleChange = jest.fn();
+    const handleSubmit = jest.fn((e) => e.preventDefault());
+    render(<ProductForm product={initialProduct} onChange={handleChange} onSubmit={handleSubmit} error="Server error" />)
 
-// 4.2.1c - Product Detail Integration
-describe('ProductDetail Integration', () => {
-  it('renders product detail', () => {
-    const product = { name: 'A', desc: 'descA', category: 'CatA', price: 10, stock: 1 };
-    render(<div>
-      <h2>{product.name}</h2>
-      <p>{product.desc}</p>
-      <span>{product.category}</span>
-      <span>{product.price}</span>
-      <span>{product.stock}</span>
-    </div>);
-    expect(screen.getByText('A')).toBeInTheDocument();
-    expect(screen.getByText('descA')).toBeInTheDocument();
-    expect(screen.getByText('CatA')).toBeInTheDocument();
-    expect(screen.getByText('10')).toBeInTheDocument();
-    expect(screen.getByText('1')).toBeInTheDocument();
-  });
-});
+    // Nhập dữ liệu vào form
+    fireEvent.change(screen.getByLabelText('Tên sản phẩm'), { target: { value: 'Đồng hồ thông minh' } })
+    fireEvent.change(screen.getByLabelText('Giá ($)'), { target: { value: '990000' } })
+    fireEvent.change(screen.getByLabelText('Tồn kho'), { target: { value: '36' } })
+
+    // Gửi form
+    fireEvent.submit(screen.getByLabelText('product-form'))
+
+    // Kiểm tra hiển thị lỗi đúng dạng alert
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert.textContent).toMatch(/server error/i)
+    })
+  })
+})

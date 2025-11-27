@@ -4,62 +4,118 @@ import com.flogin.dto.UserDTO;
 import com.flogin.model.User;
 import com.flogin.repository.UserRepository;
 import com.flogin.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    @Transactional
-    public UserDTO createUser(UserDTO dto) {
-        // Kiểm tra tồn tại username
-        userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
-            throw new RuntimeException("Username already exists");
-        });
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userDTO.getUsername() == null || userDTO.getUsername().trim().isEmpty()) {
+            throw new RuntimeException("Username không được để trống");
+        }
 
-        // Hash password
-        String hashed = passwordEncoder.encode(dto.getPassword());
+        if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
+            throw new RuntimeException("Password không được để trống");
+        }
 
         User user = User.builder()
-                .username(dto.getUsername())
-                .password(hashed)
-                .fullName(dto.getFullName())
-                .email(dto.getEmail())
+                .username(userDTO.getUsername())
+                .password(userDTO.getPassword())
+                .fullName(userDTO.getFullName())
+                .email(userDTO.getEmail())
                 .build();
 
-        User saved = userRepository.save(user);
-        dto.setId(saved.getId());
-        dto.setPassword(null); // Không trả password ra client
-        return dto;
+        User savedUser = userRepository.save(user);
+
+        return toDTO(savedUser);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    @Override
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        return toDTO(user);
+    }
+
+    @Override
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+
+        if (userDTO.getUsername() != null && !userDTO.getUsername().trim().isEmpty()) {
+            user.setUsername(userDTO.getUsername());
+        }
+        if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
+            user.setPassword(userDTO.getPassword());
+        }
+        if (userDTO.getFullName() != null) {
+            user.setFullName(userDTO.getFullName());
+        }
+        if (userDTO.getEmail() != null) {
+            user.setEmail(userDTO.getEmail());
+        }
+
+        User updatedUser = userRepository.save(user);
+        return toDTO(updatedUser);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User không tồn tại");
+        }
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDTO login(String username, String password) {
-        if (username == null || username.isBlank()) {
-            throw new RuntimeException("Username cannot be empty");
-        }
-        if (password == null || password.isBlank()) {
-            throw new RuntimeException("Password cannot be empty");
+        if (username == null || username.trim().isEmpty()) {
+            throw new RuntimeException("Username không được để trống");
         }
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        if (password == null || password.trim().isEmpty()) {
+            throw new RuntimeException("Password không được để trống");
+        }
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User không tồn tại");
+        }
+
+        User user = userOpt.get();
+
+        if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Sai mật khẩu");
         }
 
-        // Trả về DTO (có thể thêm token/session)
+        return toDTO(user);
+    }
+
+    private UserDTO toDTO(User user) {
         return UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .password(user.getPassword())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .build();
