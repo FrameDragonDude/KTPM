@@ -9,13 +9,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.context.annotation.Import;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(ProductControllerIntegrationTest.TestSecurityConfig.class)
 public class ProductControllerIntegrationTest {
+  // Tắt security cho test
+  @org.springframework.boot.test.context.TestConfiguration
+  static class TestSecurityConfig {
+    @org.springframework.context.annotation.Bean
+    public org.springframework.security.web.SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
+      http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
+      return http.build();
+    }
+  }
 
     @Autowired
     private MockMvc mockMvc;
