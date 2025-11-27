@@ -64,4 +64,55 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .build();
     }
+
+    @Override
+public java.util.List<UserDTO> getAllUsers() {
+    java.util.List<User> users = userRepository.findAll();
+    java.util.List<UserDTO> dtos = new java.util.ArrayList<>();
+    for (User user : users) {
+        dtos.add(UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .build());
+    }
+    return dtos;
+}
+
+@Override
+public UserDTO getUserById(Long id) {
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+    return UserDTO.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .fullName(user.getFullName())
+            .email(user.getEmail())
+            .build();
+}
+
+@Override
+public UserDTO updateUser(Long id, UserDTO dto) {
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+    user.setUsername(dto.getUsername());
+    if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+    }
+    user.setFullName(dto.getFullName());
+    user.setEmail(dto.getEmail());
+    User updated = userRepository.save(user);
+    return UserDTO.builder()
+            .id(updated.getId())
+            .username(updated.getUsername())
+            .fullName(updated.getFullName())
+            .email(updated.getEmail())
+            .build();
+}
+
+@Override
+public void deleteUser(Long id) {
+    userRepository.deleteById(id);
+}
 }
