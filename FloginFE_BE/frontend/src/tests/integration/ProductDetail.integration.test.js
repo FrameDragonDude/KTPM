@@ -37,7 +37,6 @@ describe('ProductDetail Integration', () => {
       expect(screen.getByTestId('product-detail')).toBeInTheDocument()
       expect(screen.getByText('Đồng hồ thông minh')).toBeInTheDocument()
       expect(screen.getByText(/990000/)).toBeInTheDocument()
-      // Kiểm tra dữ liệu trả về hợp lệ
       const result = validateProduct({
         id: 1,
         name: 'Đồng hồ thông minh',

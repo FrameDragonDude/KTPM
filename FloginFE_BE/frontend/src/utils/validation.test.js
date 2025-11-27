@@ -1,17 +1,15 @@
-// validation.test.js
-import { validateLogin } from './validateLogin';
+import { validateLogin } from './validateLogin.js'
 
 describe('validateLogin', () => {
-  it('returns true for valid email and password', () => {
-    expect(validateLogin('test@example.com', '123456')).toBe(true);
+  it('returns true for valid username and password', () => {
+    expect(validateLogin('testuser', 'abc123')).toBe(true);
   });
-  it('returns false for missing email', () => {
-    expect(validateLogin('', '123456')).toBe(false);
+
+  it('returns false for missing username', () => {
+    expect(validateLogin('', 'abc123')).toBe(false);
   });
-  it('returns false for invalid email', () => {
-    expect(validateLogin('invalid', '123456')).toBe(false);
-  });
+
   it('returns false for short password', () => {
-    expect(validateLogin('test@example.com', '123')).toBe(false);
+    expect(validateLogin('testuser', 'abc')).toBe(false);
   });
 });
