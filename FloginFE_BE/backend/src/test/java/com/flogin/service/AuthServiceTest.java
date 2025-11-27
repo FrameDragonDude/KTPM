@@ -1,85 +1,97 @@
 package com.flogin.service;
 
+import com.flogin.config.AppConfig;
 import com.flogin.dto.UserDTO;
-import com.flogin.model.User;
-import com.flogin.repository.UserRepository;
-import com.flogin.service.impl.UserServiceImpl;
+import com.flogin.model.UserRequest;
+import com.flogin.model.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    private AuthService authService;
+    private AppConfig appConfig;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private UserServiceImpl userService;
-
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    private User sampleUser;
+    private UserDTO defaultUser;
 
     @BeforeEach
-    void setup() {
-        sampleUser = User.builder()
-                .id(1L)
+    void setUp() {
+        appConfig = mock(AppConfig.class);
+        passwordEncoder = new BCryptPasswordEncoder();
+        authService = new AuthService(appConfig);
+        defaultUser = UserDTO.builder()
+                .id(1)
                 .username("testuser")
                 .password(passwordEncoder.encode("Test123"))
-                .fullName("Test User")
-                .email("test@example.com")
+                .name("Demo User")
                 .build();
+
+        when(appConfig.getDefaultUser()).thenReturn(defaultUser);
     }
 
     @Test
+    @DisplayName("TC_LOGIN_001 - Dang nhap thanh cong voi credentials hop le")
     void testLoginSuccess() {
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(sampleUser));
+        UserRequest request = new UserRequest();
+        request.setUsername("testuser");
+        request.setPassword("Test123");
 
-        UserDTO dto = userService.login("testuser", "Test123");
+        UserResponse response = authService.login(request);
 
-        assertNotNull(dto);
-        assertEquals("testuser", dto.getUsername());
-        assertNull(dto.getPassword());
+        assertNotNull(response);
+        assertEquals(defaultUser.getId(), response.getId());
+        assertEquals(defaultUser.getUsername(), response.getUsername());
+        assertEquals(defaultUser.getName(), response.getName());
+        assertNotNull(response.getToken());
     }
 
     @Test
-    void testLoginUserNotFound() {
-        when(userRepository.findByUsername("unknown")).thenReturn(Optional.empty());
+    @DisplayName("TC_LOGIN_002 - Dang nhap that bai khi username de trong")
+    void testLoginUsernameEmpty() {
+        UserRequest request = new UserRequest();
+        request.setUsername("");
+        request.setPassword("Test123");
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> userService.login("unknown", "Test123"));
-
-        assertEquals("User không tồn tại", ex.getMessage());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertEquals("Ten dang nhap hoac mat khau khong dung!", exception.getMessage());
     }
 
     @Test
+    @DisplayName("TC_LOGIN_003 - Dang nhap that bai khi password de trong")
+    void testLoginPasswordEmpty() {
+        UserRequest request = new UserRequest();
+        request.setUsername("testuser");
+        request.setPassword("");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertEquals("Ten dang nhap hoac mat khau khong dung!", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("TC_LOGIN_004 - Dang nhap that bai khi password sai")
     void testLoginWrongPassword() {
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(sampleUser));
+        UserRequest request = new UserRequest();
+        request.setUsername("testuser");
+        request.setPassword("WrongPass123");
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> userService.login("testuser", "WrongPass"));
-
-        assertEquals("Sai mật khẩu", ex.getMessage());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertEquals("Ten dang nhap hoac mat khau khong dung!", exception.getMessage());
     }
 
     @Test
-    void testLoginEmptyUsernameOrPassword() {
-        RuntimeException ex1 = assertThrows(RuntimeException.class,
-                () -> userService.login("", "Test123"));
-        assertEquals("Username cannot be empty", ex1.getMessage());
+    @DisplayName("TC_LOGIN_005 - Dang nhap that bai khi username khong ton tai")
+    void testLoginUserNotExist() {
+        UserRequest request = new UserRequest();
+        request.setUsername("unknownuser");
+        request.setPassword("Test123");
 
-        RuntimeException ex2 = assertThrows(RuntimeException.class,
-                () -> userService.login("testuser", ""));
-        assertEquals("Password cannot be empty", ex2.getMessage());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(request));
+        assertEquals("Ten dang nhap hoac mat khau khong dung!", exception.getMessage());
     }
 }

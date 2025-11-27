@@ -6,7 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.context.annotation.Import;
@@ -19,13 +23,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ProductControllerIntegrationTest.TestSecurityConfig.class)
 public class ProductControllerIntegrationTest {
   // Tắt security cho test
-  @org.springframework.boot.test.context.TestConfiguration
+  @TestConfiguration
   static class TestSecurityConfig {
-    @org.springframework.context.annotation.Bean
-    public org.springframework.security.web.SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
-      http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
-      return http.build();
-    }
+      @Bean
+      public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+          http
+                  .csrf(csrf -> csrf.disable())
+                  .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+          return http.build();
+      }
   }
 
     @Autowired

@@ -16,6 +16,15 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicTypeDescriptor: TRACE
+app:
+  default:
+    username: testuser
+    password: $2a$10$D9X7E2JzKfGmK7n8rZxQyuL1t6R8e1Qe6VvQ3bU1Y4m9K7XvL7f2a
+    name: Demo User
+
+jwt:
+  secret: your_secret_key_here
+
 
 # Note: By default we use H2 defined in application.properties.
 # These MySQL settings are only active when profile 'mysql' is enabled.
