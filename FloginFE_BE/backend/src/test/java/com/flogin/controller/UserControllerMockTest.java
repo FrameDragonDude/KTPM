@@ -30,9 +30,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 @WebMvcTest(UserController.class)
 @Import(UserControllerMockTest.NoSecurityConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 
 public class UserControllerMockTest {
         // Disable security for mock tests
