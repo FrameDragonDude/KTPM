@@ -31,7 +31,7 @@ class ProductServiceMockTest {
     @DisplayName("Mock: Test getProductById")
     void testGetProductById() {
         Product mockProduct = Product.builder()
-                .id(1L)
+                .id(1)
                 .name("Đồng hồ thông minh")
                 .description("Theo dõi sức khỏe với cảm biến nhịp tim")
                 .price(199.99)
@@ -39,15 +39,15 @@ class ProductServiceMockTest {
                 .category("Điện tử")
                 .build();
 
-        when(productRepository.findById(1L))
+        when(productRepository.findById(1))
                 .thenReturn(Optional.of(mockProduct));
 
-        ProductDTO result = productService.getProductById(1L);
+        ProductDTO result = productService.getProductById(1);
 
         assertNotNull(result);
         assertEquals("Đồng hồ thông minh", result.getName());
 
-        verify(productRepository).findById(1L);
+        verify(productRepository).findById(1);
     }
 
     // b) Test service layer với mocked repository (1 điểm)
@@ -55,7 +55,7 @@ class ProductServiceMockTest {
     @DisplayName("Mock: Test createProduct")
     void testCreateProduct() {
         Product mockProduct = Product.builder()
-                .id(2L)
+                .id(2)
                 .name("Giá đỡ laptop")
                 .description("Giá đỡ laptop nhôm ergonomic")
                 .price(49.99)
@@ -67,6 +67,7 @@ class ProductServiceMockTest {
                 .thenReturn(mockProduct);
 
         ProductDTO productDTO = ProductDTO.builder()
+                .id(2)
                 .name("Giá đỡ laptop")
                 .description("Giá đỡ laptop nhôm ergonomic")
                 .price(49.99)
@@ -87,7 +88,7 @@ class ProductServiceMockTest {
     @DisplayName("Mock: Verify findById interaction")
     void testFindByIdInteraction() {
         Product mockProduct = Product.builder()
-                .id(3L)
+                .id(3)
                 .name("Tai nghe không dây")
                 .description("Tai nghe chống ồn cao cấp")
                 .price(299.99)
@@ -95,11 +96,11 @@ class ProductServiceMockTest {
                 .category("Điện tử")
                 .build();
 
-        when(productRepository.findById(1L))
+        when(productRepository.findById(1))
                 .thenReturn(Optional.of(mockProduct));
 
-        productService.getProductById(1L);
+        productService.getProductById(1);
 
-        verify(productRepository, times(1)).findById(1L);
+        verify(productRepository, times(1)).findById(1);
     }
 }

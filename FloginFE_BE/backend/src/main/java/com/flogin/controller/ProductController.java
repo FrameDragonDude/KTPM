@@ -70,7 +70,7 @@ public class ProductController {
      * @throws ResourceNotFoundException nếu không tìm thấy product
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {
         ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }
@@ -86,7 +86,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
-            @PathVariable Long id,
+            @PathVariable int id,
             @Valid @RequestBody ProductDTO dto) {
         ProductDTO updated = productService.updateProduct(id, dto);
         return ResponseEntity.ok(updated);
@@ -101,7 +101,7 @@ public class ProductController {
      * @throws ResourceNotFoundException nếu không tìm thấy product
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

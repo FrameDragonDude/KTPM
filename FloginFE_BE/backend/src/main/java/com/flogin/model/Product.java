@@ -17,7 +17,7 @@ public class Product {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     /**
      * Tên sản phẩm
@@ -73,7 +73,6 @@ public class Product {
         this.category = category;
     }
 
-    // ...existing code...
 
     /**
      * Constructor mặc định (required by JPA)
@@ -88,7 +87,7 @@ public class Product {
      * @param price Giá sản phẩm
      * @param quantity Số lượng sản phẩm
      */
-    public Product(Long id, String name, String description, Double price, Integer quantity) {
+    public Product(int id, String name, String description, Double price, Integer quantity) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -107,7 +106,7 @@ public class Product {
      * Cho phép tạo Product theo chuỗi: builder().field1().field2().build()
      */
     public static class Builder {
-        private Long id;
+        private int id;
         private String name;
         private String description;
         private Double price;
@@ -115,7 +114,7 @@ public class Product {
         private String category;
 
         /** Set ID và return Builder để tiếp tục chuỗi */
-        public Builder id(Long id) { this.id = id; return this; }
+        public Builder id(int id) { this.id = id; return this; }
         /** Set name và return Builder để tiếp tục chuỗi */
         public Builder name(String name) { this.name = name; return this; }
         /** Set description và return Builder để tiếp tục chuỗi */
@@ -140,8 +139,8 @@ public class Product {
     }
 
     // Get/ set
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getDescription() { return description; }

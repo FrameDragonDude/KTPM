@@ -12,7 +12,7 @@ public class ProductDTO {
     /**
      * ID của sản phẩm (có thể null khi tạo mới)
      */
-    private Long id;
+    private int id;
 
     /**
      * Tên sản phẩm
@@ -53,7 +53,7 @@ public class ProductDTO {
 
     public ProductDTO() {}
 
-    public ProductDTO(Long id, String name, String description, Double price, Integer quantity, String category) {
+    public ProductDTO(int id, String name, String description, Double price, Integer quantity, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -84,14 +84,14 @@ public class ProductDTO {
      * Inner Builder class
      */
     public static class Builder {
-        private Long id;
+        private int id;
         private String name;
         private String description;
         private Double price;
         private Integer quantity;
         private String category;
 
-        public Builder id(Long id) { this.id = id; return this; }
+        public Builder id(int id) { this.id = id; return this; }
         public Builder name(String name) { this.name = name; return this; }
         public Builder description(String description) { this.description = description; return this; }
         public Builder price(Double price) { this.price = price; return this; }
@@ -101,8 +101,8 @@ public class ProductDTO {
     }
 
     // Get/ set
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getDescription() { return description; }

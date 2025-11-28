@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
      * @throws RuntimeException nếu không tìm thấy product
      */
     @Override
-    public ProductDTO getProductById(Long id) {
+    public ProductDTO getProductById(int id) {
         // findById trả về Optional<Product>
         // orElseThrow: throw exception nếu không tìm thấy
         Product p = productRepository.findById(id)
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public ProductDTO updateProduct(Long id, ProductDTO dto) {
+    public ProductDTO updateProduct(int id, ProductDTO dto) {
         // Tìm product theo ID
         Product p = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
@@ -118,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void deleteProduct(Long id) {
+    public void deleteProduct(int id) {
         // Kiểm tra product có tồn tại không
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found with id: " + id);
