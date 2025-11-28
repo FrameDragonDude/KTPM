@@ -27,7 +27,7 @@ public interface UserService {
      * @param id ID của user
      * @return UserDTO
      */
-    UserDTO getUserById(Long id);
+    UserDTO getUserById(int id);
 
     /**
      * Cập nhật thông tin user
@@ -35,13 +35,13 @@ public interface UserService {
      * @param dto thông tin mới
      * @return UserDTO đã cập nhật
      */
-    UserDTO updateUser(Long id, UserDTO dto);
+    UserDTO updateUser(int id, UserDTO dto);
 
     /**
      * Xóa user theo ID
      * @param id ID của user
      */
-    void deleteUser(Long id);
+    void deleteUser(int id);
 
     /**
      * Đăng nhập user

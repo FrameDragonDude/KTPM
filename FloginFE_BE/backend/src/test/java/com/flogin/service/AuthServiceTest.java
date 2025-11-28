@@ -33,7 +33,7 @@ class AuthServiceTest {
     @BeforeEach
     void setup() {
         sampleUser = User.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password(passwordEncoder.encode("Test123"))
                 .fullName("Test User")

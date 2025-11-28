@@ -1,7 +1,7 @@
 package com.flogin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flogin.controller.UserController;
+// import com.flogin.controller.UserController; // Xóa vì không dùng
 import com.flogin.dto.UserDTO;
 import com.flogin.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +25,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Mock dependencies trong Backend tests
  * Test UserController với mocked UserService
  */
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
 @WebMvcTest(UserController.class)
+@Import(UserControllerMockTest.NoSecurityConfig.class)
+
 public class UserControllerMockTest {
+        // Disable security for mock tests
+        @TestConfiguration
+        static class NoSecurityConfig {
+                @Bean
+                public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                        http.csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
+                        return http.build();
+                }
+        }
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,7 +62,7 @@ public class UserControllerMockTest {
     void testLoginWithMockedServiceSuccess() throws Exception {
         // Mock data
         UserDTO mockUser = UserDTO.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password("Test123")
                 .fullName("Test User")
@@ -117,7 +135,7 @@ public class UserControllerMockTest {
                 .build();
 
         UserDTO createdDTO = UserDTO.builder()
-                .id(10L)
+                .id(10)
                 .username("newuser")
                 .password("Pass123")
                 .fullName("New User")
@@ -144,13 +162,13 @@ public class UserControllerMockTest {
     void testGetAllUsersWithMockedService() throws Exception {
         List<UserDTO> mockUsers = Arrays.asList(
                 UserDTO.builder()
-                        .id(1L)
+                        .id(1)
                         .username("user1")
                         .fullName("User One")
                         .email("user1@example.com")
                         .build(),
                 UserDTO.builder()
-                        .id(2L)
+                        .id(2)
                         .username("user2")
                         .fullName("User Two")
                         .email("user2@example.com")
@@ -172,34 +190,34 @@ public class UserControllerMockTest {
     @DisplayName("5.1.2b - Test get user by id with mocked service")
     void testGetUserByIdWithMockedService() throws Exception {
         UserDTO mockUser = UserDTO.builder()
-                .id(5L)
+                .id(5)
                 .username("user5")
                 .fullName("User Five")
                 .email("user5@example.com")
                 .build();
 
-        when(userService.getUserById(5L)).thenReturn(mockUser);
+        when(userService.getUserById(5)).thenReturn(mockUser);
 
         mockMvc.perform(get("/api/users/5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(5))
                 .andExpect(jsonPath("$.username").value("user5"));
 
-        verify(userService, times(1)).getUserById(5L);
+        verify(userService, times(1)).getUserById(5);
     }
 
     @Test
     @DisplayName("5.1.2b - Test update user with mocked service")
     void testUpdateUserWithMockedService() throws Exception {
         UserDTO updatedDTO = UserDTO.builder()
-                .id(3L)
+                .id(3)
                 .username("user3")
                 .password("NewPass123")
                 .fullName("Updated User Three")
                 .email("updated3@example.com")
                 .build();
 
-        when(userService.updateUser(eq(3L), any(UserDTO.class)))
+        when(userService.updateUser(eq(3), any(UserDTO.class)))
                 .thenReturn(updatedDTO);
 
         String updateJson = "{\"username\":\"user3\",\"password\":\"NewPass123\"," +
@@ -211,18 +229,18 @@ public class UserControllerMockTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName").value("Updated User Three"));
 
-        verify(userService, times(1)).updateUser(eq(3L), any(UserDTO.class));
+        verify(userService, times(1)).updateUser(eq(3), any(UserDTO.class));
     }
 
     @Test
     @DisplayName("5.1.2b - Test delete user with mocked service")
     void testDeleteUserWithMockedService() throws Exception {
-        doNothing().when(userService).deleteUser(7L);
+        doNothing().when(userService).deleteUser(7);
 
         mockMvc.perform(delete("/api/users/7"))
                 .andExpect(status().isNoContent());
 
-        verify(userService, times(1)).deleteUser(7L);
+        verify(userService, times(1)).deleteUser(7);
     }
 
     // 5.1.2c - Verify mock interactions
@@ -230,7 +248,7 @@ public class UserControllerMockTest {
     @DisplayName("5.1.2c - Verify multiple mock interactions")
     void testVerifyMultipleMockInteractions() throws Exception {
         UserDTO mockUser = UserDTO.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password("Test123")
                 .fullName("Test User")
@@ -284,14 +302,14 @@ public class UserControllerMockTest {
         // Verify no other methods were called
         verify(userService, never()).createUser(any());
         verify(userService, never()).getAllUsers();
-        verify(userService, never()).getUserById(anyLong());
+        verify(userService, never()).getUserById(anyInt());
     }
 
     @Test
     @DisplayName("5.1.2c - Verify argument matchers")
     void testVerifyArgumentMatchers() throws Exception {
         UserDTO mockUser = UserDTO.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password("Test123")
                 .fullName("Test User")

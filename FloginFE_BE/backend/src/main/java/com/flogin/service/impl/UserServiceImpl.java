@@ -19,6 +19,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO createUser(UserDTO dto) {
+                if (dto.getUsername() == null || dto.getUsername().isBlank()) {
+                    throw new RuntimeException("Username không được để trống");
+                }
+                if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+                    throw new RuntimeException("Password không được để trống");
+                }
         // Kiểm tra tồn tại username
         userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
             throw new RuntimeException("Username already exists");
@@ -81,19 +87,19 @@ public java.util.List<UserDTO> getAllUsers() {
 }
 
 @Override
-public UserDTO getUserById(Long id) {
+public UserDTO getUserById(int id) {
     User user = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        .orElseThrow(() -> new RuntimeException("User không tồn tại"));
     return UserDTO.builder()
-            .id(user.getId())
-            .username(user.getUsername())
-            .fullName(user.getFullName())
-            .email(user.getEmail())
-            .build();
+        .id(user.getId())
+        .username(user.getUsername())
+        .fullName(user.getFullName())
+        .email(user.getEmail())
+        .build();
 }
 
 @Override
-public UserDTO updateUser(Long id, UserDTO dto) {
+public UserDTO updateUser(int id, UserDTO dto) {
     User user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User không tồn tại"));
     user.setUsername(dto.getUsername());
@@ -112,7 +118,7 @@ public UserDTO updateUser(Long id, UserDTO dto) {
 }
 
 @Override
-public void deleteUser(Long id) {
+public void deleteUser(int id) {
     userRepository.deleteById(id);
 }
 }

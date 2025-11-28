@@ -35,7 +35,7 @@ public class UserServiceTest {
     void setUp() {
 
         userTest = User.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password("Test123")
                 .fullName("Test User")
@@ -43,7 +43,7 @@ public class UserServiceTest {
                 .build();
 
         userDTOTest = UserDTO.builder()
-                .id(1L)
+                .id(1)
                 .username("testuser")
                 .password("Test123")
                 .fullName("Test User")
