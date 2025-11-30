@@ -2,6 +2,7 @@ package com.flogin.controller;
 
 import com.flogin.dto.ProductDTO;
 import com.flogin.service.ProductService;
+import com.flogin.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,10 @@ public class ProductController {
      * Inject ProductService để xử lý business logic
      * Sử dụng constructor injection (recommended practice)
      */
+        @ExceptionHandler(com.flogin.exception.ResourceNotFoundException.class)
+        public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     private final ProductService productService;
 
     /**

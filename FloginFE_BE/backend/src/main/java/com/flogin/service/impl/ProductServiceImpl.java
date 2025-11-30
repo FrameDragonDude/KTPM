@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         // findById trả về Optional<Product>
         // orElseThrow: throw exception nếu không tìm thấy
         Product p = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+            .orElseThrow(() -> new com.flogin.exception.ResourceNotFoundException("Product not found with id: " + id));
         return toDTO(p);
     }
 
@@ -98,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(int id, ProductDTO dto) {
         // Tìm product theo ID
         Product p = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+            .orElseThrow(() -> new com.flogin.exception.ResourceNotFoundException("Product not found with id: " + id));
         // Update các fields
         p.setName(dto.getName());
         p.setDescription(dto.getDescription());
@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(int id) {
         // Kiểm tra product có tồn tại không
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new com.flogin.exception.ResourceNotFoundException("Product not found with id: " + id);
         }
         // Xóa product
         productRepository.deleteById(id);

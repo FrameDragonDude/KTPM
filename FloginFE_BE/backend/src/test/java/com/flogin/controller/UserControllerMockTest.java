@@ -94,19 +94,19 @@ public class UserControllerMockTest {
     @Test
     @DisplayName("5.1.2b - Test login with mocked service - Wrong Password")
     void testLoginWithMockedServiceWrongPassword() throws Exception {
-        // Mock service to throw exception for wrong password
-        when(userService.login(eq("testuser"), eq("WrongPass")))
+        // Dùng password hợp lệ với validation
+        when(userService.login(eq("testuser"), eq("Test1234")))
                 .thenThrow(new RuntimeException("Sai mật khẩu"));
 
-        String loginJson = "{\"username\":\"testuser\",\"password\":\"WrongPass\"}";
-        
+        String loginJson = "{\"username\":\"testuser\",\"password\":\"Test1234\"}";
+
         mockMvc.perform(post("/api/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginJson))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
 
         // Verify mock was called
-        verify(userService, times(1)).login("testuser", "WrongPass");
+        verify(userService, times(1)).login("testuser", "Test1234");
     }
 
     @Test
@@ -121,7 +121,7 @@ public class UserControllerMockTest {
         mockMvc.perform(post("/api/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginJson))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
 
         verify(userService, times(1)).login("nonexistent", "Pass123");
     }
@@ -252,17 +252,17 @@ public class UserControllerMockTest {
         UserDTO mockUser = UserDTO.builder()
                 .id(1)
                 .username("testuser")
-                .password("Test123")
+                .password("Test1234")
                 .fullName("Test User")
                 .email("test@example.com")
                 .build();
 
         when(userService.login(anyString(), anyString())).thenReturn(mockUser);
 
-        // Perform multiple login requests
-        String loginJson1 = "{\"username\":\"user1\",\"password\":\"Pass1\"}";
-        String loginJson2 = "{\"username\":\"user2\",\"password\":\"Pass2\"}";
-        String loginJson3 = "{\"username\":\"user3\",\"password\":\"Pass3\"}";
+        // Dùng dữ liệu hợp lệ cho validation
+        String loginJson1 = "{\"username\":\"user1\",\"password\":\"User1234\"}";
+        String loginJson2 = "{\"username\":\"user2\",\"password\":\"User2345\"}";
+        String loginJson3 = "{\"username\":\"user3\",\"password\":\"User3456\"}";
 
         mockMvc.perform(post("/api/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -278,11 +278,11 @@ public class UserControllerMockTest {
 
         // Verify service was called exactly 3 times
         verify(userService, times(3)).login(anyString(), anyString());
-        
+
         // Verify specific calls
-        verify(userService).login("user1", "Pass1");
-        verify(userService).login("user2", "Pass2");
-        verify(userService).login("user3", "Pass3");
+        verify(userService).login("user1", "User1234");
+        verify(userService).login("user2", "User2345");
+        verify(userService).login("user3", "User3456");
     }
 
     @Test
@@ -291,16 +291,17 @@ public class UserControllerMockTest {
         when(userService.login(anyString(), anyString()))
                 .thenThrow(new RuntimeException("Sai mật khẩu"));
 
-        String loginJson = "{\"username\":\"test\",\"password\":\"wrong\"}";
-        
+        // Dùng dữ liệu hợp lệ cho validation
+        String loginJson = "{\"username\":\"testuser\",\"password\":\"Test1234\"}";
+
         mockMvc.perform(post("/api/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginJson))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
 
         // Verify service was called once
-        verify(userService, times(1)).login("test", "wrong");
-        
+        verify(userService, times(1)).login("testuser", "Test1234");
+
         // Verify no other methods were called
         verify(userService, never()).createUser(any());
         verify(userService, never()).getAllUsers();

@@ -10,23 +10,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(classes = {com.flogin.FloginApplication.class, com.flogin.config.TestSecurityConfig.class})
 @AutoConfigureMockMvc
-@Import(ProductControllerIntegrationTest.TestSecurityConfig.class)
+@Transactional
 public class ProductControllerIntegrationTest {
-  // Tắt security cho test
-  @org.springframework.boot.test.context.TestConfiguration
-  static class TestSecurityConfig {
-    @org.springframework.context.annotation.Bean
-    public org.springframework.security.web.SecurityFilterChain filterChain(org.springframework.security.config.annotation.web.builders.HttpSecurity http) throws Exception {
-      http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll();
-      return http.build();
-    }
-  }
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,34 +56,74 @@ public class ProductControllerIntegrationTest {
     @Test
     @DisplayName("4.2.2c - Get Product By Id")
     void testGetProductById() throws Exception {
-  mockMvc.perform(get("/api/products/1"))
-    .andExpect(status().isOk())
-    .andExpect(jsonPath("$.id").exists());
+        // Tạo product và lấy id trả về
+        String productJson = "{" +
+          "\"name\":\"Test\"," +
+          "\"description\":\"Desc\"," +
+          "\"category\":\"Cat\"," +
+          "\"price\":99," +
+          "\"quantity\":5}";
+        String response = mockMvc.perform(post("/api/products")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(productJson))
+          .andExpect(status().isCreated())
+          .andReturn().getResponse().getContentAsString();
+        int id = objectMapper.readTree(response).get("id").asInt();
+        mockMvc.perform(get("/api/products/" + id))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.id").value(id));
     }
 
     // 4.2.2d - Test PUT /api/products/{id} (Update)
     @Test
     @DisplayName("4.2.2d - Update Product")
     void testUpdateProduct() throws Exception {
-String updateJson = "{" +
-  "\"name\":\"Updated\"," +
-  "\"description\":\"Desc\"," +
-  "\"category\":\"Cat\"," +
-  "\"price\":100," +
-  "\"quantity\":10}";
-  mockMvc.perform(put("/api/products/1")
-    .contentType(MediaType.APPLICATION_JSON)
-    .content(updateJson))
-    .andExpect(status().isOk())
-    .andExpect(jsonPath("$.name").value("Updated"));
+        // Tạo product và lấy id trả về
+        String productJson = "{" +
+          "\"name\":\"Test\"," +
+          "\"description\":\"Desc\"," +
+          "\"category\":\"Cat\"," +
+          "\"price\":99," +
+          "\"quantity\":5}";
+        String response = mockMvc.perform(post("/api/products")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(productJson))
+          .andExpect(status().isCreated())
+          .andReturn().getResponse().getContentAsString();
+        int id = objectMapper.readTree(response).get("id").asInt();
+        String updateJson = "{" +
+          "\"name\":\"Updated\"," +
+          "\"description\":\"Desc\"," +
+          "\"category\":\"Cat\"," +
+          "\"price\":100," +
+          "\"quantity\":10}";
+        mockMvc.perform(put("/api/products/" + id)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(updateJson))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.id").value(id))
+          .andExpect(jsonPath("$.name").value("Updated"));
     }
 
     // 4.2.2e - Test DELETE /api/products/{id} (Delete)
     @Test
     @DisplayName("4.2.2e - Delete Product")
     void testDeleteProduct() throws Exception {
-  mockMvc.perform(delete("/api/products/1"))
-    .andExpect(status().isNoContent());
+        // Tạo product và lấy id trả về
+        String productJson = "{" +
+          "\"name\":\"Test\"," +
+          "\"description\":\"Desc\"," +
+          "\"category\":\"Cat\"," +
+          "\"price\":99," +
+          "\"quantity\":5}";
+        String response = mockMvc.perform(post("/api/products")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(productJson))
+          .andExpect(status().isCreated())
+          .andReturn().getResponse().getContentAsString();
+        int id = objectMapper.readTree(response).get("id").asInt();
+        mockMvc.perform(delete("/api/products/" + id))
+          .andExpect(status().isNoContent());
     }
 }
 
