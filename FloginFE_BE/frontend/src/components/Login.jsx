@@ -32,19 +32,20 @@ const Login = ({ onLogin }) => {
         <h2>Hệ Thống Quản Lý Sản Phẩm</h2>
         <p className="login-desc">Đăng nhập để quản lý kho hàng của bạn</p>
         <div className="login-group">
-          <label>Email</label>
-          <input type="email" placeholder="admin@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+            <label htmlFor="email-input">Email</label>
+            <input id="email-input" type="email" placeholder="admin@example.com" value={email} onChange={e => setEmail(e.target.value)} />
         </div>
         <div className="login-group">
-          <label>Mật khẩu</label>
-          <div style={{position:'relative'}}>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Nhập mật khẩu của bạn"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              style={{paddingRight:32}}
-            />
+            <label htmlFor="password-input">Mật khẩu</label>
+            <div style={{position:'relative'}}>
+              <input
+                id="password-input"
+                type={showPassword ? "text" : "password"}
+                placeholder="Nhập mật khẩu của bạn"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                style={{paddingRight:32}}
+              />
             <button
               type="button"
               style={{position:'absolute',right:6,top:6,border:'none',background:'none',cursor:'pointer',fontSize:18,color:'#6c7a89'}}
