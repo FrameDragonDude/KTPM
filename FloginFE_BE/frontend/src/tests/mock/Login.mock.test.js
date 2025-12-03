@@ -1,11 +1,12 @@
 import React from 'react';
+import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Login from '../components/Login';
-import { login } from '../services/authService';
+import Login from '../../components/Login';
+import { login } from '../../services/authService';
 
 // Mock authService.loginUser()
-jest.mock('../services/authService');
+jest.mock('../../services/authService');
 
 /**
  * Frontend Mocking
@@ -36,7 +37,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'admin@example.com');
@@ -64,11 +65,11 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.type(passwordInput, 'Test123');
+      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
       await waitFor(() => {
@@ -90,12 +91,12 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const rememberCheckbox = screen.getByRole('checkbox');
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'remember@example.com');
-      await userEvent.type(passwordInput, 'Remember123');
+      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(rememberCheckbox);
       await userEvent.click(submitButton);
       
@@ -117,11 +118,11 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'dash@example.com');
-      await userEvent.type(passwordInput, 'Dash123');
+      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
       await waitFor(() => {
@@ -146,7 +147,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'wrong@example.com');
@@ -172,7 +173,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'notfound@example.com');
@@ -194,7 +195,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'test@example.com');
@@ -211,7 +212,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'test@example.com');
@@ -231,7 +232,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'test@example.com');
@@ -254,7 +255,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'admin@example.com');
@@ -274,7 +275,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'admin@example.com');
@@ -306,7 +307,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       // First attempt
@@ -339,7 +340,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       await userEvent.type(emailInput, 'admin@example.com');
@@ -393,7 +394,7 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
       // First attempt
@@ -404,8 +405,10 @@ describe('Login Component Mock Tests', () => {
       expect(mockOnLogin).not.toHaveBeenCalled();
       
       // Second attempt
+      await userEvent.clear(emailInput);
+      await userEvent.type(emailInput, 'admin@example.com');
       await userEvent.clear(passwordInput);
-      await userEvent.type(passwordInput, 'CorrectPass');
+      await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
       await waitFor(() => {
@@ -427,11 +430,11 @@ describe('Login Component Mock Tests', () => {
       render(<Login onLogin={mockOnLogin} />);
       
       const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i);
+      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'slow@example.com');
-      await userEvent.type(passwordInput, 'SlowPass123');
+      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
       await waitFor(() => {
