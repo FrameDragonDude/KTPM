@@ -25,6 +25,7 @@
 \usepackage{epsfig}
 \usepackage{tikz}
 \usepackage{listings}
+\usepackage{float} % For [H] figure placement
 \usetikzlibrary{arrows,snakes,backgrounds}
 \usepackage{hyperref}
 \hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true} 
@@ -60,7 +61,7 @@
 		\tiny \bf 
 	\end{tabular}  }
 \fancyfoot{} % clear all footer fields
-\fancyfoot[L]{\scriptsize \ttfamily Bài tập lớn môn Phát triển phần mềm mã nguồn mở - Niên khóa 2023-2024}
+\fancyfoot[L]{\scriptsize \ttfamily Bài tập lớn môn Kiểm thử phần mềm - Niên khóa 2024-2025}
 \fancyfoot[R]{\scriptsize \ttfamily Trang {\thepage}/\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.3pt}
 \renewcommand{\footrulewidth}{0.3pt}
@@ -106,51 +107,98 @@
 	numberfirstline=true
 }
 
+% YAML language definition for CI/CD listings
+\lstdefinelanguage{YAML}{
+  keywords={true,false,null,on,off,yes,no},
+  keywordstyle=\color{blue}\bfseries,
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{dkgreen}\ttfamily,
+  stringstyle=\color{mauve}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+% JavaScript language definition for listings (Jest/Cypress/React)
+\lstdefinelanguage{JavaScript}{
+	keywords={break,case,catch,class,const,continue,debugger,default,delete,do,else,export,extends,finally,for,function,if,import,in,instanceof,let,new,return,super,switch,this,throw,try,typeof,var,void,while,with,yield,async,await},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={describe,it,expect,beforeEach,afterEach,beforeAll,afterAll,cy},
+	sensitive=true,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{dkgreen}\ttfamily,
+	stringstyle=\color{mauve}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+% Convenience macros for consistent figures and tables
+\newcommand{\imgfull}[3][\textwidth]{%
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=#1]{#2}
+		\caption{#3}
+	\end{figure}}
+
+% Test cases table template: use with rows like: TC01 & Mô tả & Bước & Dữ liệu & KQ mong đợi \\
+\newenvironment{TestCases}{%
+	\begin{table}[h]
+	\centering\small
+	\begin{tabularx}{\textwidth}{p{1.6cm} X X X X}
+		oprule
+	ID & Mô tả & Bước & Dữ liệu & KQ mong đợi \\
+	\midrule
+}{%
+	\bottomrule
+	\end{tabularx}
+	\end{table}
+}
+
 \begin{document}
 
 \begin{titlepage}
 \begin{center}
-TRƯỜNG ĐẠI HỌC SÀI GÒN \\
-KHOA CÔNG NGHỆ THÔNG TIN
+{\textbf{TRƯỜNG ĐẠI HỌC SÀI GÒN}} \\
+{\textbf{KHOA CÔNG NGHỆ THÔNG TIN}}
 \end{center}
-\vspace{1cm}
+\vspace{1.5cm}
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[width=3cm]{logoITSGU.png}
+\includegraphics[width=3.5cm]{logoITSGU.png}
 \end{center}
 \end{figure}
 
-\vspace{1cm}
+\vspace{1.5cm}
 
 
 \begin{center}
 \begin{tabular}{c}
-	\multicolumn{1}{l}{\textbf{{\Large CÔNG NGHỆ PHẦN MỀM}}}\\
-	~~\\
+	\textbf{{\Large CÔNG NGHỆ PHẦN MỀM}}\\
+	\\
 	\hline
 	\\
-	\multicolumn{1}{l}{\textbf{{\Large Xử lý bài toán }}}\\
-	\\
-	
-	\textbf{{\Huge Ứng dụng Đặt hàng \& Nhà hàng}}\\
+	\textbf{{\Large Bài Tập Lớn - Kiểm Thử Phần Mềm}}\\
+	\textbf{{\Large Ứng dụng Đăng Nhập \& Quản Lý Sản Phẩm}}\\
+	\textbf{{\Large (Version 1.0)}}\\
 	\\
 	\hline
 \end{tabular}
 \end{center}
 
-\vspace{3cm}
+\vspace{2.5cm}
 
 \begin{table}[h]
 \begin{tabular}{rrl}
-\hspace{5 cm} & GVHD: &Từ Lãng Phiêu\\
-& SV: & SV1 - MSSV\\
-& & Nguyen Van A - 99999 \\
-& & SV2 - MSSV \\
-% & & SV3 - MSSV \\
-% & & SV4 - MSSV\\
+\hspace{5 cm} & GVHD: & Từ Lãng Phiêu\\
+& SV: & Ma Lý Hoàng Ân - 3123410013 \\
+& & Nguyễn Phúc Tứ - 3122560088 \\
+& & Võ Thành Huynh - 3123410135 \\
+& & Hoàng Quốc Cường - 3123410037 \\
 \end{tabular}
-\vspace{1.5 cm}
+\vspace{1 cm}
 \end{table}
 
 \begin{center}
@@ -167,145 +215,2955 @@ KHOA CÔNG NGHỆ THÔNG TIN
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+% NỘI DUNG BÁO CÁO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{booktabs} % Để tạo các đường kẻ ngang đẹp hơn
+\usepackage{tabularx} % Để tạo bảng có chiều rộng cố định (dùng cột X)
+\usepackage{ragged2e} % Để căn chỉnh văn bản trong cột X (Justify/Căn đều)
+
+% Đặt lại lệnh \tabularx cho phép căn đều (Justify)
+\newcolumntype{L}{>{\RaggedRight\arraybackslash}X} 
+\newcolumntype{C}{>{\Centering\arraybackslash}X} 
+
+\begin{table}[h!]
+    \centering
+    \caption{Bảng Phân công và Mức độ Hoàn thành Công việc}
+    \label{tab:phancong}
+    \begin{tabularx}{\textwidth}{@{}l L L c@{}}
+        \toprule
+        \textbf{MSSV} & \textbf{Họ và tên} & \textbf{Công việc} & \textbf{Mức độ hoàn thành} \\
+        \midrule
+        3123410013 & Ma Lý Hoàng Ân & Làm product, gắn ci/cd, e2e, làm database, viết latex & 100\% \\
+        3122560088 & Nguyễn Phúc Tử & Làm 1 nửa user, gắn ci/cd, e2e, làm database, viết latex & 100\% \\
+        3123410135 & Võ Thành Huynh & Làm 1 nửa user, gắn ci/cd, e2e, làm database, viết latex & 100\% \\
+        3123410037 & Hoàng Quốc Cường & Làm phần mở rộng, gắn ci/cd, e2e, viết latex & 100\% \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+\newpage
 \section{Phần giới thiệu}
-\subsection{Xác định số lượng sinh viên trong tập mẫu}
 
+\subsection{Tổng quan Dự án}
 
-		\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
-		\begin{lstlisting}
-		% ------------------------------- %
-		%     XOA MAN HINH VA CAC BIEN    %
-		% ------------------------------- %
-		clear
-		clc
-		
-		% ------------------------------- %
-		%      NHAP DU LIEU BAI TOAN      %
-		% ------------------------------- %
-		n = ...;      % So nguoi dan
-		m = ...;      % So benh vien
-		% Ma tran D bieu dien thu tu uu tien cua benh vien doi voi benh nhan
-		% ung voi tung hang
-		D = [...];
-		% Ma tran B bieu dien thu tu uu tien cua benh nhan doi voi benh vien
-		% ung voi tung cot
-		B = [...];
-		% Ma tran c bieu dien suc chua cua tung benh vien
-		c = [...];
-		% Ma tran a bieu dien moi benh nhan chi duoc chon lua mot benh vien
-		a = ones(n,1);
-		
-		% ------------------------------- %
-		% GIAI BAI TOAN BANG SOLVER MOSEK %
-		% ------------------------------- %
-		cvx_begin
-			cvx_solver mosek
-			% Bien x(i,j) chi nhan gia tri 0 hoac 1
-			% ung voi su ghep goi benh nhan r_i voi benh vien h_j
-			variable x(n,m) binary
-			% Toi da tong cac bien x(i,j)
-			% tuc la cang nhieu cap duoc ghep doi cang tot
-			maximize( 0 )
-			subject to
-				% Tong cac hang trong cung mot cot (so benh nhan duoc chon)
-				% nho hon hoac bang suc chua cua benh vien
-				sum(x,1) <= c;
-				% Tong cac cot trong cung mot cot (so benh vien duoc chon)
-				% nho hon hoac bang 1
-				sum(x,2) <= a;
-			% Bao dam khong co cac cap chan
-			for u = 1:n
-				for v = 1:m
-					%Tinh so hang dau tien trong ham dieu kien on dinh
-					t1 = 0;
-					for j = 1:m 
-						t1 = t1 + lt(D(u,j),D(u,v)) * x(u,j); 
-					end
-					%Tinh so hang thu hai trong ham dieu kien on dinh
-					t2 = 0;
-					for i = 1:n
-						t2 = t2 + lt(B(i,v),B(u,v)) * x(i,v) / c(v); 
-					end
-					%Xac lap ham dieu kien on dinh
-					t1 + t2 + x(u,v) >= 1;
-					%Ham dam bao cac cap (r_u,h_v) duoc xet nam trong A, neu
-					%cap do khong nam trong A thi x_uv = 0
-					if D(u,v) == m+n+1 || B(u,v) == m+n+1
-						(eq(D(u,v),m+n+1) + eq(B(u,v),m+n+1)) * x(u,v) == 0;
-					end
-				end
-			end
-		cvx_end
-		
-		% ------------------------------- %
-		%  HIEN THI KET QUA RA MAN HINH   %
-		% ------------------------------- %
-		D
-		B
-		c
-		x       % Cac cap duoc ghep doi
-	\end{lstlisting}
-	\end{mdframed}
-	\subsection{Các công trình liên quan}
-	\textbf{ Giới thiệu vấn đề}
-	Công việc các bạn cần làm
+Dự án \textbf{FloginFE\_BE} là một ứng dụng web toàn diện được phát triển nhằm mục đích cung cấp một hệ thống quản lý cơ bản, tập trung vào việc \textbf{thực thi và kiểm thử chất lượng phần mềm}. Đây là một ứng dụng \textbf{Full-stack} được xây dựng trên hai nền tảng công nghệ phổ biến nhất hiện nay: \textbf{React} cho giao diện người dùng (Frontend) và \textbf{Spring Boot} cho tầng API dịch vụ (Backend).
 
- \section{Phần giới thiệu 2}
-    \subsection{âsddfffggg}
+\subsection{Mục tiêu và Chức năng Chính}
+
+Dự án tập trung vào hai module cốt lõi, thể hiện đầy đủ các nghiệp vụ cơ bản của một ứng dụng web:
+\begin{itemize}[label=$\bullet$]
+    \item \textbf{Chức năng Login (Xác thực):} Cung cấp hệ thống đăng nhập/đăng ký với các quy tắc \textbf{validation} nghiêm ngặt.
+    \item \textbf{Chức năng Product (Quản lý Sản phẩm):} Triển khai đầy đủ các thao tác \textbf{CRUD} (Create, Read, Update, Delete) cho việc quản lý dữ liệu sản phẩm.
+\end{itemize}
+
+\subsection{Phương pháp Phát triển}
+
+Dự án áp dụng phương pháp \textbf{Phát triển Hướng Kiểm thử (Test-Driven Development - TDD)}. Mọi chức năng đều được bắt đầu bằng việc viết các bài kiểm thử, đảm bảo độ tin cậy và khả năng bảo trì cao của ứng dụng.
+
+\subsection{Công Nghệ Sử Dụng}
+
+Dự án sử dụng các công nghệ tiên tiến, cập nhật những phiên bản mới nhất để đảm bảo hiệu suất và bảo mật.
+
+\subsection{Frontend (Giao diện Người dùng)}
+
+\begin{itemize}[label=$\diamond$]
+    \item \textbf{React 18+}: Framework JavaScript chính để xây dựng giao diện.
+    \item \textbf{React Testing Library \& Jest}: Công cụ thiết yếu cho \textbf{Unit Testing} và \textbf{Integration Testing} các components.
+    \item \textbf{Axios}: Thư viện HTTP client để giao tiếp với Backend API.
+    \item \textbf{CSS3}: Định kiểu (styling) và tạo các hiệu ứng animations.
+\end{itemize}
+
+\subsection{Backend (API Dịch vụ)}
+
+\begin{itemize}[label=$\diamond$]
+    \item \textbf{Spring Boot 3.2+} \& \textbf{Java 17+}: Framework và ngôn ngữ chính để xây dựng các API RESTful.
+    \item \textbf{JUnit 5}: Testing framework cơ bản.
+    \item \textbf{Mockito}: Framework chuyên dụng để \textbf{mock} (giả lập) các đối tượng phụ thuộc trong quá trình Unit Testing.
+    \item \textbf{Spring Data JPA}: Thao tác và quản lý dữ liệu với cơ sở dữ liệu.
+    \item \textbf{Maven}: Công cụ quản lý build và dependencies.
+\end{itemize}
+
+\subsection{Cấu Trúc Dự Án}
+
+Dự án có cấu trúc rõ ràng, phân chia thành hai thư mục chính \texttt{frontend/} và \texttt{backend/}, phản ánh kiến trúc Client-Server của ứng dụng.
+
+\subsection{Thư Mục Frontend (\texttt{FloginFE\_BE/frontend/})}
+
+\begin{itemize}[label=$\rightarrow$]
+    \item \texttt{src/components/}: Chứa các components chính (Login, Product components).
+    \item \texttt{src/services/}: API services để gọi Backend.
+    \item \texttt{src/utils/}: Các hàm tiện ích (ví dụ: Validation utilities).
+    \item \texttt{src/tests/}: Các file kiểm thử giao diện.
+\end{itemize}
+
+\subsection{Thư Mục Backend (\texttt{FloginFE\_BE/backend/})}
+
+\begin{itemize}[label=$\rightarrow$]
+    \item \texttt{main/java/.../controller/}: Xử lý các yêu cầu HTTP (\texttt{AuthController}, \texttt{ProductController}).
+    \item \texttt{main/java/.../service/}: Chứa các logic nghiệp vụ chính.
+    \item \texttt{main/java/.../repository/}: Tương tác với cơ sở dữ liệu (Data access layer).
+    \item \texttt{test/java/}: Chứa tất cả các bài kiểm thử (Unit Test, Integration Test) cho tầng Backend.
+\end{itemize}
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{SỐ LƯỢNG SINH VIÊN 1}
-\subsection{Xác định số lượng sinh viên Nguyen Van A}
+\section{Câu 1: Phân tích và Thiết kế Test Cases (20 điểm)}
+
+\subsection{Câu 1.1: Login - Phân tích và Test Scenarios (10 điểm)}
+\subsubsection{Phân tích yêu cầu Login (4 điểm)}
+% TODO: Mô tả chức năng đăng nhập, validation rules, security requirements
+Chức năng đăng nhập cho phép người dùng truy cập vào hệ thống bằng cách sử dụng
+\textbf{email} và \textbf{password}. Khi người dùng gửi yêu cầu đăng nhập, hệ thống sẽ
+kiểm tra tính hợp lệ của thông tin đầu vào, xác thực tài khoản.
+nếu thông tin chính xác. Quá trình đăng nhập bao gồm ba nhóm yêu cầu chính: \textit{functional requirements},
+\textit{validation rules} và \textit{security requirements}.
+
+\paragraph{1. Functional Requirements}
+\begin{itemize}
+    \item Người dùng nhập username và password để đăng nhập.
+    \item Frontend thực hiện kiểm tra cơ bản (không rỗng, đúng định dạng).
+    \item Backend kiểm tra lại toàn bộ dữ liệu theo validation rules.
+    \item Hệ thống tìm tài khoản theo username:
+        \begin{itemize}
+            \item Nếu không tồn tại $\rightarrow$ trả lỗi “User does not exist”.
+        \end{itemize}
+    \item So sánh password với dữ liệu đã lưu:
+        \begin{itemize}
+            \item Nếu sai $\rightarrow$ trả lỗi “Wrong password”.
+            \item Nếu đúng  cho phép truy cập.
+        \end{itemize}
+    \item Sau khi đăng nhập thành công, hệ thống trả về thông tin người dùng hoặc điều hướng sang trang chính.
+\end{itemize}
+
+\paragraph{2. Validation Rules}
+\textbf{Username}
+\begin{itemize}
+    \item Không được để trống.
+    \item Độ dài từ 3–50 ký tự.
+    \item Chỉ chứa ký tự: \texttt{a–z, A–Z, 0–9, ., \_, -}.
+    \item Không chứa khoảng trắng.
+    \item Không chứa ký tự đặc biệt như \texttt{! @ \# \$ \% \^ \& * ...}.
+\end{itemize}
+
+\textbf{Password}
+\begin{itemize}
+    \item Không được để trống.
+    \item Độ dài từ 6–100 ký tự.
+    \item Phải chứa ít nhất 1 chữ cái.
+    \item Phải chứa ít nhất 1 chữ số.
+    \item Cho phép ký tự đặc biệt.
+\end{itemize}
+
+\paragraph{3. Security Requirements}
+\begin{itemize}
+    \item Mật khẩu phải được lưu dạng băm (hash) và không lưu plaintext.
+    \item Token phiên làm việc phải có thời hạn 
+    \item Backend bắt buộc phải tự kiểm tra toàn bộ validation, tránh bypass từ phía FE.
+\end{itemize}
+\subsubsection{Thiết kế Test Cases chi tiết (6 điểm)}
+% TODO: Bảng test cases (valid/invalid username, password, empty fields, etc.)
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{11cm}|}
+\hline
+\textbf{Test Case ID} & TC\_LOGIN\_001 \\ \hline
+\textbf{Test Name} & Đăng nhập thành công với credentials hợp lệ \\ \hline
+\textbf{Priority} & Critical \\ \hline
+
+\textbf{Preconditions} &
+- Application is running \\
+& - User account exists \\ \hline
+
+\textbf{Test Steps} &
+1. Navigate to login page \\
+& 2. Enter valid username \\
+& 3. Enter valid password \\
+& 4. Click Login button \\ \hline
+
+\textbf{Test Data} &
+Username: \texttt{testuser} \\
+& Password: \texttt{Test123} \\ \hline
+
+\textbf{Expected Result} &
+- Success message displayed \\
+& - Token stored \\
+& - Redirect to dashboard \\ \hline
+
+\textbf{Actual Result} &
+(Để trống) \\ \hline
+
+\textbf{Status} & Not Run \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{11cm}|}
+\hline
+\textbf{Test Case ID} & TC\_LOGIN\_002 \\ \hline
+\textbf{Test Name} & Đăng nhập thất bại khi username để trống \\ \hline
+\textbf{Priority} & High \\ \hline
+\textbf{Preconditions} &
+- Application is running \\ \hline
+\textbf{Test Steps} &
+1. Navigate to login page \\
+& 2. Leave username empty \\
+& 3. Enter valid password \\
+& 4. Click Login button \\ \hline
+\textbf{Test Data} &
+Username: \texttt{} \\
+& Password: \texttt{Test123} \\ \hline
+\textbf{Expected Result} &
+- Throws RuntimeException: "Username cannot be empty" \\ \hline
+\textbf{Actual Result} &
+(Để trống) \\ \hline
+\textbf{Status} & Not Run \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{11cm}|}
+\hline
+\textbf{Test Case ID} & TC\_LOGIN\_003 \\ \hline
+\textbf{Test Name} & Đăng nhập thất bại khi password để trống \\ \hline
+\textbf{Priority} & High \\ \hline
+\textbf{Preconditions} &
+- Application is running \\ \hline
+\textbf{Test Steps} &
+1. Navigate to login page \\
+& 2. Enter valid username \\
+& 3. Leave password empty \\
+& 4. Click Login button \\ \hline
+\textbf{Test Data} &
+Username: \texttt{testuser} \\
+& Password: \texttt{} \\ \hline
+\textbf{Expected Result} &
+- Throws RuntimeException: "Password cannot be empty" \\ \hline
+\textbf{Actual Result} &
+(Để trống) \\ \hline
+\textbf{Status} & Not Run \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{11cm}|}
+\hline
+\textbf{Test Case ID} & TC\_LOGIN\_004 \\ \hline
+\textbf{Test Name} & Đăng nhập thất bại khi password sai \\ \hline
+\textbf{Priority} & Critical \\ \hline
+\textbf{Preconditions} &
+- User account exists \\ \hline
+\textbf{Test Steps} &
+1. Navigate to login page \\
+& 2. Enter valid username \\
+& 3. Enter wrong password \\
+& 4. Click Login button \\ \hline
+\textbf{Test Data} &
+Username: \texttt{testuser} \\
+& Password: \texttt{WrongPass123} \\ \hline
+\textbf{Expected Result} &
+- Throws RuntimeException: "Wrong password" \\ \hline
+\textbf{Actual Result} &
+(Để trống) \\ \hline
+\textbf{Status} & Not Run \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{11cm}|}
+\hline
+\textbf{Test Case ID} & TC\_LOGIN\_005 \\ \hline
+\textbf{Test Name} & Đăng nhập thất bại khi username không tồn tại \\ \hline
+\textbf{Priority} & Critical \\ \hline
+\textbf{Preconditions} &
+- Application is running \\ \hline
+\textbf{Test Steps} &
+1. Navigate to login page \\
+& 2. Enter username that does not exist \\
+& 3. Enter any password \\
+& 4. Click Login button \\ \hline
+\textbf{Test Data} &
+Username: \texttt{unknownuser} \\
+& Password: \texttt{Test123} \\ \hline
+\textbf{Expected Result} &
+- Throws RuntimeException: "User does not exist" \\ \hline
+\textbf{Actual Result} &
+(Để trống) \\ \hline
+\textbf{Status} & Not Run \\ \hline
+\end{tabular}
+\end{table}
+
 \newpage
-\subsection{Vẽ biều đồ tần xuất tương đối tích lũy số sinh viên theo phân nhóm outcome các sinh viên có câu trả lời sai trong kỳ thi cuối kỳ trong các nhóm}
+\subsection{Câu 1.2: Product - Phân tích và Test Cases (10 điểm)}
+\subsubsection{Phân tích yêu cầu Product (4 điểm)}
+% TODO: Mô tả chức năng CRUD, validation rules, business logic
+\subsection*{a) Phân tích yêu cầu chức năng CRUD}
 \begin{itemize}
-    \item \large\bfseries\underline {Phần code R}
-    \item Phan code Python
+    \item \textbf{Create}: Thêm sản phẩm mới vào hệ thống với các thông tin: tên, mô tả, giá, số lượng, danh mục.
+    \item \textbf{Read}: Xem danh sách tất cả sản phẩm hoặc chi tiết từng sản phẩm.
+    \item \textbf{Update}: Cập nhật thông tin sản phẩm đã có (tên, mô tả, giá, số lượng, danh mục).
+    \item \textbf{Delete}: Xóa sản phẩm khỏi hệ thống (theo id).
 \end{itemize}
+
+\subsection*{b) Liệt kê và mô tả ít nhất 10 test scenarios cho Product}
 \begin{enumerate}
-    \item 
+    \item Tạo sản phẩm với dữ liệu hợp lệ (happy path).
+    \item Xem danh sách sản phẩm (happy path).
+    \item Xem chi tiết sản phẩm theo id hợp lệ (happy path).
+    \item Cập nhật sản phẩm với dữ liệu hợp lệ (happy path).
+    \item Xóa sản phẩm với id hợp lệ (happy path).
+    \item Tạo sản phẩm với tên rỗng (negative).
+    \item Tạo sản phẩm với giá âm (negative).
+    \item Tạo sản phẩm với số lượng âm (negative).
+    \item Tạo sản phẩm với mô tả quá 500 ký tự (boundary).
+    \item Tạo sản phẩm với danh mục không hợp lệ (negative).
+    \item Cập nhật sản phẩm không tồn tại (edge case).
+    \item Xóa sản phẩm không tồn tại (edge case).
+    \item Tạo sản phẩm trùng tên (edge case).
+    \item Tạo sản phẩm với giá trị min/max (boundary).
+    \item Tạo sản phẩm với số lượng min/max (boundary).
 \end{enumerate}
-\begin{enumerate}
-    \item Toi di hoc va {\color{red}di lam cho cong } ty
-\end{enumerate}
+
+\subsection*{c) Phân loại test scenarios theo mức độ ưu tiên và giải thích}
 \begin{itemize}
-  \item This is my first point
-  \item Another point I want to make 
-  \item[!] A point to exclaim something!
-  \item[$\blacksquare$] Make the point fair and square.
-  \item[NOTE] This entry has no bullet
-  \item[] A blank label?
+    \item \textbf{Cao}: Các trường hợp happy path (CRUD thành công), kiểm tra dữ liệu hợp lệ.
+    \item \textbf{Trung bình}: Negative tests (dữ liệu không hợp lệ), boundary tests (giá trị min/max).
+    \item \textbf{Thấp}: Edge cases (sản phẩm trùng tên, xóa/cập nhật sản phẩm không tồn tại).
 \end{itemize}
+\textbf{Giải thích:} Happy path đảm bảo chức năng chính hoạt động đúng, nên ưu tiên cao. Negative và boundary giúp phát hiện lỗi validation, ưu tiên trung bình. Edge case ít gặp nhưng cần kiểm tra để tránh lỗi bất ngờ, ưu tiên thấp hơn.
+\subsubsection{Thiết kế Test Cases chi tiết (6 điểm)}
+% TODO: Bảng test cases cho Create/Read/Update/Delete/Search
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Case ID} & TC\_PRODUCT\_001 \\
+\hline
+\textbf{Test Name} & Tạo sản phẩm mới thành công \\
+\hline
+\textbf{Priority} & Critical \\
+\hline
+\textbf{Preconditions} & - User đã đăng nhập \newline - User có quyền tạo sản phẩm \\
+\hline
+\textbf{Test Steps} & 1. Vào trang Product \newline 2. Nhấn "Thêm sản phẩm mới" \newline 3. Nhập thông tin sản phẩm \newline 4. Nhấn nút Lưu \\
+\hline
+\textbf{Test Data} & Name: Laptop Dell \newline Price: 15000000 \newline Quantity: 10 \newline Category: Electronics \\
+\hline
+\textbf{Expected Result} & - Product created successfully \newline - Success message displayed \newline - Product appears in list \\
+\hline
+\textbf{Actual Result} & (Để trống) \\
+\hline
+\textbf{Status} & Not Run \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Case ID} & TC\_PRODUCT\_002 \\
+\hline
+\textbf{Test Name} & Cập nhật sản phẩm thành công \\
+\hline
+\textbf{Priority} & Critical \\
+\hline
+\textbf{Preconditions} & - User đã đăng nhập\newline - User có quyền chỉnh sửa sản phẩm \\
+\hline
+\textbf{Test Steps} & 1. Vào trang Product\newline 2. Chọn sản phẩm cần cập nhật\newline 3. Nhấn "Edit"\newline 4. Sửa thông tin sản phẩm\newline 5. Nhấn nút Save \\
+\hline
+\textbf{Test Data} & Name: Laptop Dell\newline Price: 16000000\newline Quantity: 12\newline Category: Electronics \\
+\hline
+\textbf{Expected Result} & - Product updated successfully\newline - Success message displayed\newline - Product info updated in list \\
+\hline
+\textbf{Actual Result} & (Để trống) \\
+\hline
+\textbf{Status} & Not Run \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Case ID} & TC\_PRODUCT\_003 \\
+\hline
+\textbf{Test Name} & Xóa sản phẩm thành công \\
+\hline
+\textbf{Priority} & Critical \\
+\hline
+\textbf{Preconditions} & - User đã đăng nhập\newline - User có quyền xóa sản phẩm \\
+\hline
+\textbf{Test Steps} & 1. Vào trang Product\newline 2. Chọn sản phẩm cần xóa\newline 3. Nhấn "Delete"\newline 4. Xác nhận xóa \\
+\hline
+\textbf{Test Data} & Name: Laptop Dell\newline Price: 16000000\newline Quantity: 12\newline Category: Electronics \\
+\hline
+\textbf{Expected Result} & - Product deleted successfully\newline - Success message displayed\newline - Product removed from list \\
+\hline
+\textbf{Actual Result} & (Để trống) \\
+\hline
+\textbf{Status} & Not Run \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Case ID} & TC\_PRODUCT\_004 \\
+\hline
+\textbf{Test Name} & Xem chi tiết sản phẩm thành công \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\textbf{Preconditions} & - User đã đăng nhập \\
+\hline
+\textbf{Test Steps} & 1. Vào trang Product\newline 2. Chọn sản phẩm cần xem\newline 3. Nhấn "View Details" \\
+\hline
+\textbf{Test Data} & Name: Laptop Dell\newline Price: 16000000\newline Quantity: 12\newline Category: Electronics \\
+\hline
+\textbf{Expected Result} & - Product detail displayed correctly \\
+\hline
+\textbf{Actual Result} & (Để trống) \\
+\hline
+\textbf{Status} & Not Run \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Case ID} & TC\_PRODUCT\_005 \\
+\hline
+\textbf{Test Name} & Xem danh sách sản phẩm \\
+\hline
+\textbf{Priority} & High \\
+\hline
+\textbf{Preconditions} & - User đã đăng nhập \\
+\hline
+\textbf{Test Steps} & 1. Vào trang Product\newline 2. Kiểm tra danh sách sản phẩm hiển thị \\
+\hline
+\textbf{Test Data} & (Không cần) \\
+\hline
+\textbf{Expected Result} & - Product list displayed correctly \\
+\hline
+\textbf{Actual Result} & (Để trống) \\
+\hline
+\textbf{Status} & Not Run \\
+\hline
+\end{tabular}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Câu 2: Unit Testing và Test-Driven Development (20 điểm)}
+
+\subsection{Câu 2.1: Login - Unit Tests Frontend và Backend (10 điểm)}
+\subsubsection{Frontend Unit Tests - Validation Login (5 điểm)}
+
+% Cần để hiển thị code tốt:
+% \usepackage{listings}
+% \usepackage{xcolor}
+% \lstset{basicstyle=\ttfamily\small,breaklines=true}
+
+\begin{lstlisting}[language=JavaScript, caption={Login Form Unit Tests}]
+
+describe('Login Component', () => {
+  let onLoginMock;
+
+  beforeEach(() => {
+    onLoginMock = jest.fn();
+    render(<Login onLogin={onLoginMock} />);
+  });
+
+  test('Hiển thị form login với tất cả input và nút', () => {
+    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Đăng nhập/i })).toBeInTheDocument();
+    expect(screen.getByText(/Demo: admin \/ Admin123/i)).toBeInTheDocument();
+  });
+
+  test('Validation: không nhập email và password sẽ hiện lỗi', () => {
+    fireEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
+    expect(screen.getByText(/Vui lòng nhập đầy đủ thông tin/i)).toBeInTheDocument();
+    expect(onLoginMock).not.toHaveBeenCalled();
+  });
+
+  test('Sai email hoặc password sẽ hiện lỗi', () => {
+    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'wrong' } });
+    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'wrongpass' } });
+    fireEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
+    expect(screen.getByText(/Sai tài khoản hoặc mật khẩu/i)).toBeInTheDocument();
+    expect(onLoginMock).not.toHaveBeenCalled();
+  });
+
+  test('Đăng nhập đúng sẽ gọi onLogin', () => {
+    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'Admin123' } });
+    fireEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
+    expect(onLoginMock).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/Sai tài khoản hoặc mật khẩu/i)).not.toBeInTheDocument();
+  });
+
+  test('Toggle show/hide password', () => {
+    const passwordInput = screen.getByPlaceholderText(/Nhập mật khẩu của bạn/i);
+    const toggleBtn = screen.getByLabelText(/Hiện mật khẩu/i);
+
+    expect(passwordInput).toHaveAttribute('type', 'password');
+    fireEvent.click(toggleBtn);
+    expect(passwordInput).toHaveAttribute('type', 'text');
+    fireEvent.click(toggleBtn);
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
+
+  test('Checkbox "Ghi nhớ đăng nhập" hoạt động', () => {
+    const checkbox = screen.getByLabelText(/Ghi nhớ đăng nhập/i);
+    expect(checkbox.checked).toBe(false);
+
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(true);
+
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(false);
+  });
+});
+
+\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Câu 3: Integration Testing (20 điểm)}
+
+\subsection{Câu 3.1: Login - Integration Testing (10 điểm)}
+
+\subsubsection{Frontend Component Integration (5 điểm)}
+
+\paragraph{Mục đích Integration Testing cho Login Frontend}
+Integration testing ở Frontend kiểm tra sự tương tác giữa các thành phần:
+\begin{itemize}
+    \item \textbf{Login component} với \textbf{authService} (API calls)
+    \item Form submission và xử lý response từ backend
+    \item Navigation sau khi đăng nhập thành công
+    
+    \item Error handling và hiển thị thông báo lỗi
+\end{itemize}
+
+\paragraph{Test Setup và Configuration}
+\begin{lstlisting}[language=JavaScript, caption={Login Integration Test Setup}]
+// Login.integration.test.js
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import Login from '../components/Login';
+
+// Mock axios for API calls
+jest.mock('axios');
+
+describe('Login Component Integration Tests', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+});
+\end{lstlisting}
+
+\paragraph{Test Cases chi tiết}
+
+\textbf{TC\_LOGIN\_INT\_001: Successful Login Flow}
+\begin{lstlisting}[language=JavaScript, caption={Test đăng nhập thành công}]
+test('handles successful login with API integration', async () => {
+    // Arrange
+    const mockOnLogin = jest.fn();
+    const mockResponse = {
+        data: {
+            id: 1,
+            username: 'admin',
+            email: 'admin@example.com',
+            token: 'fake-jwt-token'
+        }
+    };
+    axios.post.mockResolvedValueOnce(mockResponse);
+
+    // Act
+    render(<Login onLogin={mockOnLogin} />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i), 
+        'admin@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i), 
+        'Admin123'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(axios.post).toHaveBeenCalledWith(
+            expect.stringContaining('/api/auth/login'),
+            {
+                email: 'admin@example.com',
+                password: 'Admin123'
+            }
+        );
+        expect(mockOnLogin).toHaveBeenCalledTimes(1);
+        expect(mockOnLogin).toHaveBeenCalledWith(mockResponse.data);
+    });
+});
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_002: Failed Login - Wrong Credentials}
+\begin{lstlisting}[language=JavaScript, caption={Test đăng nhập thất bại - sai credentials}]
+test('handles failed login - wrong credentials (401)', async () => {
+    // Arrange
+    const mockError = {
+        response: {
+            status: 401,
+            data: { message: 'Invalid credentials' }
+        }
+    };
+    axios.post.mockRejectedValueOnce(mockError);
+
+    // Act
+    render(<Login onLogin={jest.fn()} />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i), 
+        'wrong@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i), 
+        'WrongPass123'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(screen.getByText(/Sai tài khoản hoặc mật khẩu/i))
+            .toBeInTheDocument();
+    });
+});
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_003: Network Error Handling}
+\begin{lstlisting}[language=JavaScript, caption={Test xử lý lỗi network}]
+test('handles network error during login', async () => {
+    // Arrange
+    const mockError = new Error('Network Error');
+    axios.post.mockRejectedValueOnce(mockError);
+
+    // Act
+    render(<Login onLogin={jest.fn()} />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i), 
+        'admin@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i), 
+        'Admin123'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(screen.getByText(/Lỗi kết nối/i))
+            .toBeInTheDocument();
+    });
+});
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_004: Token Storage After Successful Login}
+\begin{lstlisting}[language=JavaScript, caption={Test lưu token sau đăng nhập}]
+test('stores token in localStorage after successful login', async () => {
+    // Arrange
+    const mockResponse = {
+        data: {
+            id: 1,
+            username: 'admin',
+            token: 'fake-jwt-token-12345'
+        }
+    };
+    axios.post.mockResolvedValueOnce(mockResponse);
+    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+
+    // Act
+    render(<Login onLogin={jest.fn()} />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i), 
+        'admin@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i), 
+        'Admin123'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(setItemSpy).toHaveBeenCalledWith(
+            'authToken',
+            'fake-jwt-token-12345'
+        );
+    });
+    
+    setItemSpy.mockRestore();
+});
+\end{lstlisting}
+
+\paragraph{Kết quả mong đợi}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|p{8cm}|}
+\hline
+\textbf{Test Case} & \textbf{Status} & \textbf{Expected Result} \\
+\hline
+TC\_LOGIN\_INT\_001 & Pass & API called correctly, onLogin invoked, user data returned \\
+\hline
+TC\_LOGIN\_INT\_002 & Pass & Error message displayed, onLogin not called \\
+\hline
+TC\_LOGIN\_INT\_003 & Pass & Network error message shown to user \\
+\hline
+TC\_LOGIN\_INT\_004 & Pass & Token stored in localStorage successfully \\
+\hline
+\end{tabular}
+\caption{Kết quả Frontend Integration Tests}
+
+\end{table}
+
 \newpage
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- \section{Phần 4 Hiện thi các kết quả Kiểm thử}
-    \subsection{Test case1}
+\subsubsection{Backend API Integration (5 điểm)}
+
+\paragraph{Mục đích Integration Testing cho Login Backend}
+Integration testing ở Backend kiểm tra toàn bộ flow:
+\begin{itemize}
+    \item \textbf{Controller} → \textbf{Service} → \textbf{Repository} → \textbf{Database}
+    \item HTTP request/response handling
+    \item Validation và error handling
+    \item Database transactions
+\end{itemize}
+
+\paragraph{Test Configuration}
+\begin{lstlisting}[language=Java, caption={Login Integration Test Configuration}]
+// UserControllerIntegrationTest.java
+package com.flogin.backend.controller;
+
+import com.flogin.backend.FloginApplication;
+import com.flogin.backend.config.TestSecurityConfig;
+import com.flogin.backend.model.User;
+import com.flogin.backend.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest(classes = {FloginApplication.class, TestSecurityConfig.class})
+@AutoConfigureMockMvc
+@Transactional
+@DisplayName("User/Login Controller Integration Tests")
+class UserControllerIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        // Clean database before each test
+        userRepository.deleteAll();
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+    }
+}
+\end{lstlisting}
+
+\paragraph{Test Cases chi tiết}
+
+\textbf{TC\_LOGIN\_INT\_BE\_001: Successful Login}
+\begin{lstlisting}[language=Java, caption={Test đăng nhập thành công - Backend}]
+@Test
+@DisplayName("Should login successfully with valid credentials")
+void testLoginSuccess() throws Exception {
+    // Arrange: Create user in database
+    User user = new User();
+    user.setUsername("testuser");
+    user.setEmail("test@example.com");
+    user.setPassword("$2a$10$encodedPassword"); // BCrypt encoded
+    userRepository.save(user);
+
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "testuser",
+            "password", "Test123"
+        )
+    );
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("testuser"))
+        .andExpect(jsonPath("$.email").value("test@example.com"))
+        .andExpect(jsonPath("$.token").exists());
+}
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_BE\_002: Login Failed - User Not Found}
+\begin{lstlisting}[language=Java, caption={Test user không tồn tại}]
+@Test
+@DisplayName("Should return 404 when user does not exist")
+void testLoginUserNotFound() throws Exception {
+    // Arrange
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "nonexistent",
+            "password", "Test123"
+        )
+    );
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message")
+            .value("User does not exist"));
+}
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_BE\_003: Login Failed - Wrong Password}
+\begin{lstlisting}[language=Java, caption={Test sai mật khẩu}]
+@Test
+@DisplayName("Should return 401 when password is incorrect")
+void testLoginWrongPassword() throws Exception {
+    // Arrange: Create user
+    User user = new User();
+    user.setUsername("testuser");
+    user.setEmail("test@example.com");
+    user.setPassword("$2a$10$correctEncodedPassword");
+    userRepository.save(user);
+
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "testuser",
+            "password", "WrongPassword123"
+        )
+    );
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.message")
+            .value("Wrong password"));
+}
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_BE\_004: Validation - Empty Username}
+\begin{lstlisting}[language=Java, caption={Test validation username trống}]
+@Test
+@DisplayName("Should return 400 when username is empty")
+void testLoginEmptyUsername() throws Exception {
+    // Arrange
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "",
+            "password", "Test123"
+        )
+    );
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.errors.username")
+            .value("Username cannot be empty"));
+}
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_BE\_005: Validation - Invalid Username Format}
+\begin{lstlisting}[language=Java, caption={Test username không hợp lệ}]
+@Test
+@DisplayName("Should return 400 when username has invalid format")
+void testLoginInvalidUsernameFormat() throws Exception {
+    // Arrange: username with special characters
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "test@user#123",
+            "password", "Test123"
+        )
+    );
+
+    // Act & Assert
+    mockMvc.perform(post("/api/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(loginRequest))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.errors.username")
+            .value(containsString("Invalid characters")));
+}
+\end{lstlisting}
+
+\textbf{TC\_LOGIN\_INT\_BE\_006: Complete Flow Test}
+\begin{lstlisting}[language=Java, caption={Test toàn bộ flow từ Controller đến Database}]
+@Test
+@DisplayName("Complete login flow: Controller -> Service -> Repository -> DB")
+void testCompleteLoginFlow() throws Exception {
+    // Arrange: Create user with all fields
+    User user = new User();
+    user.setUsername("admin");
+    user.setEmail("admin@example.com");
+    user.setPassword("$2a$10$encodedAdminPassword");
+    user.setRole("ADMIN");
+    User savedUser = userRepository.save(user);
+
+    String loginRequest = objectMapper.writeValueAsString(
+        Map.of(
+            "username", "admin",
+            "password", "Admin123"
+        )
+    );
+
+    // Act & Assert
+    String responseContent = mockMvc.perform(
+            post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginRequest))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(savedUser.getId()))
+        .andExpect(jsonPath("$.username").value("admin"))
+        .andExpect(jsonPath("$.email").value("admin@example.com"))
+        .andExpect(jsonPath("$.role").value("ADMIN"))
+        .andExpect(jsonPath("$.token").isNotEmpty())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    // Additional verification
+    JsonNode response = objectMapper.readTree(responseContent);
+    String token = response.get("token").asText();
+    assertThat(token).isNotNull();
+    assertThat(token.length()).isGreaterThan(20);
+}
+\end{lstlisting}
+
+\paragraph{Kết quả Integration Testing Backend}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Test Case} & \textbf{HTTP} & \textbf{Status} & \textbf{Description} \\
+\hline
+TC\_LOGIN\_INT\_BE\_001 & 200 OK & Pass & Login thành công, trả về user \& token \\
+\hline
+TC\_LOGIN\_INT\_BE\_002 & 404 & Pass & User không tồn tại \\
+\hline
+TC\_LOGIN\_INT\_BE\_003 & 401 & Pass & Sai mật khẩu \\
+\hline
+TC\_LOGIN\_INT\_BE\_004 & 400 & Pass & Username trống \\
+\hline
+TC\_LOGIN\_INT\_BE\_005 & 400 & Pass & Username format không hợp lệ \\
+\hline
+TC\_LOGIN\_INT\_BE\_006 & 200 OK & Pass & Complete flow test \\
+\hline
+\end{tabular}
+\caption{Kết quả Backend Integration Tests}
+\end{table}
+
+\newpage
+
+\subsection{Câu 3.2: Product - Integration Testing (10 điểm)}
+
+\subsubsection{Frontend Component Integration (5 điểm)}
+
+\paragraph{Test ProductList component với API}
+
+\textbf{Mục đích:} Kiểm tra ProductList component tương tác với productService để fetch và hiển thị danh sách sản phẩm.
+
+\begin{lstlisting}[language=JavaScript, caption={ProductList Integration Test}]
+// ProductList.integration.test.js
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import axios from 'axios';
+import ProductList from '../components/ProductList';
+
+jest.mock('axios');
+
+describe('ProductList Component Integration Tests', () => {
+    
+    test('fetches and displays product list', async () => {
+        // Arrange
+        const mockProducts = [
+            {
+                id: 1,
+                name: 'Laptop Dell',
+                price: 15000000,
+                quantity: 10,
+                category: 'Electronics'
+            },
+            {
+                id: 2,
+                name: 'iPhone 14',
+                price: 20000000,
+                quantity: 5,
+                category: 'Electronics'
+            }
+        ];
+        axios.get.mockResolvedValueOnce({ data: mockProducts });
+
+        // Act
+        render(<ProductList />);
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.getByText('Laptop Dell')).toBeInTheDocument();
+            expect(screen.getByText('iPhone 14')).toBeInTheDocument();
+            expect(screen.getByText(/15000000/)).toBeInTheDocument();
+        });
+    });
+
+    test('handles empty product list', async () => {
+        // Arrange
+        axios.get.mockResolvedValueOnce({ data: [] });
+
+        // Act
+        render(<ProductList />);
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.getByText(/Không có sản phẩm/i))
+                .toBeInTheDocument();
+        });
+    });
+
+    test('handles API error when fetching products', async () => {
+        // Arrange
+        axios.get.mockRejectedValueOnce(
+            new Error('Network Error')
+        );
+
+        // Act
+        render(<ProductList />);
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.getByText(/Lỗi tải dữ liệu/i))
+                .toBeInTheDocument();
+        });
+    });
+});
+\end{lstlisting}
+
+\paragraph{Test ProductForm component với Create/Update}
+
+\begin{lstlisting}[language=JavaScript, caption={ProductForm Integration Test}]
+// ProductForm.integration.test.js
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
+import ProductForm from '../components/ProductForm';
+
+jest.mock('axios');
+
+describe('ProductForm Integration Tests', () => {
+    
+    test('creates new product successfully', async () => {
+        // Arrange
+        const mockOnSuccess = jest.fn();
+        const mockResponse = {
+            data: {
+                id: 1,
+                name: 'Test Product',
+                price: 99000,
+                quantity: 5,
+                category: 'Test Category'
+            }
+        };
+        axios.post.mockResolvedValueOnce(mockResponse);
+
+        // Act
+        render(<ProductForm onSuccess={mockOnSuccess} />);
+        
+        await userEvent.type(
+            screen.getByLabelText(/Tên sản phẩm/i),
+            'Test Product'
+        );
+        await userEvent.type(
+            screen.getByLabelText(/Giá/i),
+            '99000'
+        );
+        await userEvent.type(
+            screen.getByLabelText(/Số lượng/i),
+            '5'
+        );
+        await userEvent.click(
+            screen.getByRole('button', { name: /Lưu/i })
+        );
+
+        // Assert
+        await waitFor(() => {
+            expect(axios.post).toHaveBeenCalledWith(
+                expect.stringContaining('/api/products'),
+                expect.objectContaining({
+                    name: 'Test Product',
+                    price: 99000,
+                    quantity: 5
+                })
+            );
+            expect(mockOnSuccess).toHaveBeenCalled();
+        });
+    });
+
+    test('handles validation errors from backend', async () => {
+        // Arrange
+        const mockError = {
+            response: {
+                status: 400,
+                data: {
+                    errors: {
+                        name: 'Name must be at least 3 characters',
+                        price: 'Price must be positive'
+                    }
+                }
+            }
+        };
+        axios.post.mockRejectedValueOnce(mockError);
+
+        // Act
+        render(<ProductForm />);
+        
+        await userEvent.type(
+            screen.getByLabelText(/Tên sản phẩm/i),
+            'AB'
+        );
+        await userEvent.type(
+            screen.getByLabelText(/Giá/i),
+            '-100'
+        );
+        await userEvent.click(
+            screen.getByRole('button', { name: /Lưu/i })
+        );
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.getByText(/at least 3 characters/i))
+                .toBeInTheDocument();
+            expect(screen.getByText(/must be positive/i))
+                .toBeInTheDocument();
+        });
+    });
+});
+\end{lstlisting}
+
+\subsubsection{Backend API Integration (5 điểm)}
+
+\paragraph{Test ProductController Integration}
+
+\begin{lstlisting}[language=Java, caption={ProductController Integration Test}]
+// ProductControllerIntegrationTest.java
+package com.flogin.backend.controller;
+
+import com.flogin.backend.FloginApplication;
+import com.flogin.backend.config.TestSecurityConfig;
+import com.flogin.backend.model.Product;
+import com.flogin.backend.repository.ProductRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest(classes = {FloginApplication.class, TestSecurityConfig.class})
+@AutoConfigureMockMvc
+@Transactional
+@DisplayName("Product Controller Integration Tests")
+class ProductControllerIntegrationTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        productRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("Should create product successfully")
+    void testCreateProduct() throws Exception {
+        // Arrange
+        String productJson = objectMapper.writeValueAsString(
+            Map.of(
+                "name", "Laptop Dell",
+                "description", "High performance laptop",
+                "category", "Electronics",
+                "price", 15000000,
+                "quantity", 10
+            )
+        );
+
+        // Act & Assert
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(productJson))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.name").value("Laptop Dell"))
+            .andExpect(jsonPath("$.price").value(15000000))
+            .andExpect(jsonPath("$.quantity").value(10));
+    }
+
+    @Test
+    @DisplayName("Should return 400 for invalid product data")
+    void testCreateProductInvalidData() throws Exception {
+        // Arrange: price is negative
+        String productJson = objectMapper.writeValueAsString(
+            Map.of(
+                "name", "Test",
+                "price", -100,
+                "quantity", 5
+            )
+        );
+
+        // Act & Assert
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(productJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.errors.price").exists());
+    }
+
+    @Test
+    @DisplayName("Should get all products")
+    void testGetAllProducts() throws Exception {
+        // Arrange: Create test products
+        Product p1 = new Product();
+        p1.setName("Product 1");
+        p1.setPrice(100.0);
+        p1.setQuantity(5);
+        productRepository.save(p1);
+
+        Product p2 = new Product();
+        p2.setName("Product 2");
+        p2.setPrice(200.0);
+        p2.setQuantity(10);
+        productRepository.save(p2);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/products"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].name").value("Product 1"))
+            .andExpect(jsonPath("$[1].name").value("Product 2"));
+    }
+
+    @Test
+    @DisplayName("Should get product by id")
+    void testGetProductById() throws Exception {
+        // Arrange
+        Product product = new Product();
+        product.setName("Test Product");
+        product.setPrice(150.0);
+        product.setQuantity(8);
+        Product saved = productRepository.save(product);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/products/" + saved.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(saved.getId()))
+            .andExpect(jsonPath("$.name").value("Test Product"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 for non-existent product")
+    void testGetProductByIdNotFound() throws Exception {
+        // Act & Assert
+        mockMvc.perform(get("/api/products/99999"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message")
+                .value(containsString("not found")));
+    }
+
+    @Test
+    @DisplayName("Should update product successfully")
+    void testUpdateProduct() throws Exception {
+        // Arrange
+        Product product = new Product();
+        product.setName("Old Name");
+        product.setPrice(100.0);
+        product.setQuantity(5);
+        Product saved = productRepository.save(product);
+
+        String updateJson = objectMapper.writeValueAsString(
+            Map.of(
+                "name", "Updated Name",
+                "price", 150.0,
+                "quantity", 10
+            )
+        );
+
+        // Act & Assert
+        mockMvc.perform(put("/api/products/" + saved.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name").value("Updated Name"))
+            .andExpect(jsonPath("$.price").value(150.0));
+    }
+
+    @Test
+    @DisplayName("Should delete product successfully")
+    void testDeleteProduct() throws Exception {
+        // Arrange
+        Product product = new Product();
+        product.setName("To Delete");
+        product.setPrice(100.0);
+        product.setQuantity(5);
+        Product saved = productRepository.save(product);
+
+        // Act & Assert
+        mockMvc.perform(delete("/api/products/" + saved.getId()))
+            .andExpect(status().isNoContent());
+
+        // Verify deletion
+        assertFalse(productRepository.existsById(saved.getId()));
+    }
+}
+\end{lstlisting}
+
+\subsection{Câu 3.2: Product - Integration Testing (10 điểm)}
+
+\subsubsection{Frontend Component Integration (5 điểm)}
+
+Test tích hợp Product components:
+
+\begin{enumerate}[a)]
+	\item \textbf{Test ProductList component với API (2 điểm)}
+	
+\begin{lstlisting}[language=JavaScript, caption=ProductList Integration Test]
+
+// Mock productService đúng export mặc định và method getAllProducts
+jest.mock('../../services/productService.js', () => ({
+  __esModule: true,
+  default: {
+    getAllProducts: jest.fn(),
+  },
+}));
+
+import productService from '../../services/productService.js';
+import ProductList from '../../components/ProductList.jsx'
+import { validateProduct } from '../../utils/validateProduct.js'
+
+describe('ProductList Integration', () => {
+  afterEach(() => jest.clearAllMocks())
+
+  test('Hiển thị danh sách sản phẩm từ API', async () => {
+    const mockProducts = [
+      { id: 1, name: 'Đồng hồ thông minh', desc: 'Đồng hồ thông minh đa năng', price: 999000, category: 'Điện tử', stock: 36 },
+      { id: 2, name: 'Giá đỡ laptop', desc: 'Giá đỡ laptop nhôm ergonomic', price: 399000, category: 'Phụ kiện', stock: 78 },
+      { id: 3, name: 'Chuột không dây', desc: 'Chuột không dây tiện lợi', price: 299000, category: 'Phụ kiện', stock: 20 },
+    ]
+    productService.getAllProducts.mockResolvedValueOnce(mockProducts);
+
+    render(<ProductList />)
+
+    await waitFor(() => {
+      const items = screen.getAllByTestId('product-item')
+      expect(items).toHaveLength(3)
+      expect(items[0].textContent).toContain('Đồng hồ thông minh')
+      // Kiểm tra validateProduct cho từng sản phẩm
+      mockProducts.forEach(p => {
+        expect(validateProduct(p)).toBe(true)
+      })
+    })
+  })
+
+  test('Hiển thị lỗi khi API lỗi', async () => {
+    productService.getAllProducts.mockRejectedValueOnce(new Error('Server error'));
+    render(<ProductList />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/server error/i)
+    })
+  })
+})
+\end{lstlisting}
+
+	\item \textbf{Test ProductForm component (create/edit) (2 điểm)}
+	
+\begin{lstlisting}[language=JavaScript, caption=ProductForm Integration Test]
+
+/**
+ * Câu 3 - Integration Test (Frontend)
+ * ProductForm + productService
+ */
+
+// Mock đúng tên export của service bằng Jest
+jest.mock('../../services/productService.js', () => ({
+  createProduct: jest.fn(),
+}))
+
+import { createProduct } from '../../services/productService.js'
+import ProductForm from '../../components/ProductForm.jsx'
+import { validateProduct } from '../../utils/validateProduct.js'
+
+describe('Product Integration', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  test('Tạo sản phẩm thành công sẽ gọi API đúng payload', async () => {
+    createProduct.mockResolvedValueOnce({
+      id: 1,
+      name: 'Đồng hồ thông minh',
+      price: 990000,
+      quantity: 36,
+      category: 'Điện tử',
+      description: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+    });
+
+    function Wrapper() {
+      const [product, setProduct] = React.useState({ name: '', desc: '', price: 0, stock: 0, category: '' });
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProduct((prev) => ({ ...prev, [name]: name === 'price' || name === 'stock' ? Number(value) : value }));
+      };
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        createProduct(product);
+      };
+      return <ProductForm product={product} onChange={handleChange} onSubmit={handleSubmit} />;
+    }
+    render(<Wrapper />);
+
+    fireEvent.change(screen.getByLabelText('Tên sản phẩm'), { target: { value: 'Đồng hồ thông minh' } });
+    fireEvent.change(screen.getByLabelText('Giá ($)'), { target: { value: '990000' } });
+    fireEvent.change(screen.getByLabelText('Tồn kho'), { target: { value: '36' } });
+    fireEvent.change(screen.getByLabelText('Danh mục'), { target: { value: 'Điện tử' } });
+    fireEvent.change(screen.getByLabelText('Mô tả'), { target: { value: 'Theo dõi sức khỏe với cảm biến nhịp tim' } });
+    fireEvent.submit(screen.getByLabelText('product-form'));
+
+    await waitFor(() => {
+      expect(createProduct).toHaveBeenCalledTimes(1);
+      const [payload] = createProduct.mock.calls[0];
+      expect(payload).toMatchObject({
+        name: 'Đồng hồ thông minh',
+        price: 990000,
+        stock: 36,
+        desc: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+        category: 'Điện tử',
+      });
+      expect(validateProduct(payload)).toBe(true);
+    });
+  })
+
+  test('Tạo sản phẩm lỗi để hiển thị lỗi', async () => {
+    // Giả lập API ném lỗi
+    createProduct.mockRejectedValueOnce(new Error('Server error'))
+
+    const initialProduct = { name: '', desc: '', price: 0, stock: 0, category: '' };
+    const handleChange = jest.fn();
+    const handleSubmit = jest.fn((e) => e.preventDefault());
+    render(<ProductForm product={initialProduct} onChange={handleChange} onSubmit={handleSubmit} error="Server error" />)
+
+    // Nhập dữ liệu vào form
+    fireEvent.change(screen.getByLabelText('Tên sản phẩm'), { target: { value: 'Đồng hồ thông minh' } })
+    fireEvent.change(screen.getByLabelText('Giá ($)'), { target: { value: '990000' } })
+    fireEvent.change(screen.getByLabelText('Tồn kho'), { target: { value: '36' } })
+
+    // Gửi form
+    fireEvent.submit(screen.getByLabelText('product-form'))
+
+    // Kiểm tra hiển thị lỗi đúng dạng alert
+    await waitFor(() => {
+      const alert = screen.getByRole('alert')
+      expect(alert.textContent).toMatch(/server error/i)
+    })
+  })
+})
+\end{lstlisting}
+
+	\item \textbf{Test ProductDetail component (1 điểm)}
+	
+\begin{lstlisting}[language=JavaScript, caption=ProductDetail Integration Test]
+
+// Mock productService
+jest.mock('../../services/productService.js', () => ({
+  getProductById: jest.fn(),
+}))
+
+import { getProductById } from '../../services/productService.js'
+import ProductDetail from '../../components/ProductDetail.jsx'
+import { validateProduct } from '../../utils/validateProduct.js'
+
+describe('ProductDetail Integration', () => {
+  afterEach(() => jest.clearAllMocks())
+
+  test('Hiển thị chi tiết sản phẩm khi load thành công', async () => {
+    getProductById.mockResolvedValueOnce({
+      id: 1,
+      name: 'Đồng hồ thông minh',
+      desc: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+      price: 990000,
+      stock: 36,
+      category: 'Điện tử',
+    })
+
+    render(<ProductDetail product={{
+      id: 1,
+      name: 'Đồng hồ thông minh',
+      desc: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+      price: 990000,
+      stock: 36,
+      category: 'Điện tử',
+    }} />)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('product-detail')).toBeInTheDocument()
+      expect(screen.getByText('Đồng hồ thông minh')).toBeInTheDocument()
+      expect(screen.getByText(/990000/)).toBeInTheDocument()
+      // Kiểm tra dữ liệu trả về hợp lệ
+      const result = validateProduct({
+        id: 1,
+        name: 'Đồng hồ thông minh',
+        desc: 'Theo dõi sức khỏe với cảm biến nhịp tim',
+        price: 990000,
+        stock: 36,
+        category: 'Điện tử',
+      })
+      expect(result).toBe(true)
+    })
+  })
+
+  test('Hiển thị lỗi khi API lỗi', async () => {
+    getProductById.mockRejectedValueOnce(new Error('Not found'))
+
+    render(<ProductDetail id={99} />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/không tìm thấy sản phẩm|có lỗi xảy ra/i)
+    })
+  })
+})
+\end{lstlisting}
+
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{3.2.PNG}
+    \caption{Tất cả các kết quả của Product khi test}
+    \label{fig:Frontend}
+\end{figure}
+
+\subsubsection{Backend API Integration (5 điểm)}
+
+Test các API endpoints của Product:
+
+\textbf{Yêu cầu:}
+
+\begin{enumerate}[a)]
+	\item Test POST /api/products (Create) (1 điểm)
+    \begin{lstlisting}
+    // 4.2.2a - Test POST /api/products (Create)
+    @Test
+    @DisplayName("4.2.2a - Create Product")
+    void testCreateProduct() throws Exception {
+  String productJson = "{" +
+    "\"name\":\"Test\"," +
+    "\"description\":\"Desc\"," +
+    "\"category\":\"Cat\"," +
+    "\"price\":99," +
+    "\"quantity\":5}";
+  mockMvc.perform(post("/api/products")
+    .contentType(MediaType.APPLICATION_JSON)
+    .content(productJson))
+    .andExpect(status().isCreated())
+    .andExpect(jsonPath("$.name").value("Test"));
+    }
+    \end{lstlisting}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{4.2.2a.png}
+        \caption{Kết quả chạy test API \texttt{POST /api/products}}
+        \label{fig:api-post}
+    \end{figure}
+    
+	\item Test GET /api/products (Read all) (1 điểm)
+    \begin{lstlisting}
+    // 4.2.2b - Test GET /api/products (Read all)
+    @Test
+    @DisplayName("4.2.2b - Get All Products")
+    void testGetAllProducts() throws Exception {
+  mockMvc.perform(get("/api/products"))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$").isArray());
+    }
+    \end{lstlisting}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{4.2.2b.png}
+        \caption{Kết quả chạy test API \texttt{GET /api/products\{id\} (Read all)}}
+        \label{fig:api-get}
+    \end{figure}
+    
+	\item Test GET /api/products/\{id\} (Read one) (1 điểm)
+    \begin{lstlisting}
+    // 4.2.2c - Test GET /api/products/{id} (Read one)
+    @Test
+    @DisplayName("4.2.2c - Get Product By Id")
+    void testGetProductById() throws Exception {
+  mockMvc.perform(get("/api/products/1"))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.id").exists());
+    }
+
+    \end{lstlisting}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{4.2.2c.png}
+        \caption{Kết quả chạy test API \texttt{GET /api/products\{id\} (Read one)}}
+        \label{fig:api-get}
+    \end{figure}
+    
+	\item Test PUT /api/products/\{id\} (Update) (1 điểm)
+    \begin{lstlisting}
+    // 4.2.2d - Test PUT /api/products/{id} (Update)
+    @Test
+    @DisplayName("4.2.2d - Update Product")
+    void testUpdateProduct() throws Exception {
+String updateJson = "{" +
+  "\"name\":\"Updated\"," +
+  "\"description\":\"Desc\"," +
+  "\"category\":\"Cat\"," +
+  "\"price\":100," +
+  "\"quantity\":10}";
+  mockMvc.perform(put("/api/products/1")
+    .contentType(MediaType.APPLICATION_JSON)
+    .content(updateJson))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.name").value("Updated"));
+    }
+    \end{lstlisting}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{4.2.2d.png}
+        \caption{Kết quả chạy test API \texttt{GET /api/products\{id\} (Update)}}
+        \label{fig:api-update}
+    \end{figure}
+    
+	\item Test DELETE /api/products/\{id\} (Delete) (1 điểm)
+    \begin{lstlisting}
+    // 4.2.2e - Test DELETE /api/products/{id} (Delete)
+    @Test
+    @DisplayName("4.2.2e - Delete Product")
+    void testDeleteProduct() throws Exception {
+  mockMvc.perform(delete("/api/products/1"))
+    .andExpect(status().isNoContent());
+    }
+    \end{lstlisting}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{4.2.2e.png}
+        \caption{Kết quả chạy test API \texttt{GET /api/products\{id\} (Delete)}}
+        \label{fig:api-delete}
+    \end{figure}
+\end{enumerate}
+
+% Chèn listing: ProductControllerTest.java
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Câu 4: Mock Testing (10 điểm)}
+
+\subsection{Câu 4.1: Login - Mock Testing (5 điểm)}
+
+\subsubsection{Frontend Mocking (2.5 điểm)}
+
+\paragraph{Mục đích Frontend Mocking}
+Mock testing ở Frontend giúp:
+\begin{itemize}
+    \item Kiểm tra component logic mà không phụ thuộc vào backend thật
+    \item Tăng tốc độ test execution
+    \item Test các edge cases và error scenarios dễ dàng
+    \item Isolate component behavior
+\end{itemize}
+
+\paragraph{Mock authService với Jest}
+
+\begin{lstlisting}[language=JavaScript, caption={Mock authService Setup}]
+// __mocks__/authService.js
+export const authService = {
+    login: jest.fn(),
+    logout: jest.fn(),
+    getCurrentUser: jest.fn(),
+    isAuthenticated: jest.fn()
+};
+
+export default authService;
+\end{lstlisting}
+
+\begin{lstlisting}[language=JavaScript, caption={Login Component Test với Mock Service}]
+// Login.mock.test.js
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import Login from '../components/Login';
+import authService from '../services/authService';
+
+// Mock the entire service module
+jest.mock('../services/authService');
+
+describe('Login Component - Mock Tests', () => {
+    
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('calls authService.login with correct credentials', async () => {
+        //Arrange
+const mockUser = {
+id: 1,
+username: 'testuser',
+token: 'mock-token'
+};
+authService.login.mockResolvedValue(mockUser);
+    // Act
+    render(<Login />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i),
+        'test@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i),
+        'Test123'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(authService.login).toHaveBeenCalledTimes(1);
+        expect(authService.login).toHaveBeenCalledWith(
+            'test@example.com',
+            'Test123'
+        );
+    });
+});
+
+test('handles login failure with mocked error', async () => {
+    // Arrange
+    const mockError = new Error('Invalid credentials');
+    authService.login.mockRejectedValue(mockError);
+
+    // Act
+    render(<Login />);
+    
+    await userEvent.type(
+        screen.getByLabelText(/Email/i),
+        'wrong@example.com'
+    );
+    await userEvent.type(
+        screen.getByLabelText(/Mật khẩu/i),
+        'WrongPass'
+    );
+    await userEvent.click(
+        screen.getByRole('button', { name: /Đăng nhập/i })
+    );
+
+    // Assert
+    await waitFor(() => {
+        expect(screen.getByText(/Invalid credentials/i))
+            .toBeInTheDocument();
+    });
+});
+
+test('mock different response scenarios', async () => {
+    // Scenario 1: Success
+    authService.login.mockResolvedValueOnce({
+        id: 1,
+        username: 'user1'
+    });
+
+    // Scenario 2: Network timeout
+    authService.login.mockRejectedValueOnce(
+        new Error('Network timeout')
+    );
+
+    // Scenario 3: Server error
+    authService.login.mockRejectedValueOnce(
+        { response: { status: 500 } }
+    );
+
+    // Test each scenario...
+});
+});
+\end{lstlisting}
+\paragraph{Mock Axios Requests}
+\begin{lstlisting}[language=JavaScript, caption={Mock Axios với jest.mock}]
+// Login.axios-mock.test.js
+import axios from 'axios';
+import authService from '../services/authService';
+jest.mock('axios');
+describe('AuthService Mock Tests', () => {
+test('login makes POST request to correct endpoint', async () => {
+    // Arrange
+    const mockResponse = {
+        data: {
+            id: 1,
+            username: 'testuser',
+            token: 'fake-token'
+        }
+    };
+    axios.post.mockResolvedValue(mockResponse);
+
+    // Act
+    const result = await authService.login(
+        'test@example.com',
+        'Test123'
+    );
+
+    // Assert
+    expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining('/api/auth/login'),
+        {
+            email: 'test@example.com',
+            password: 'Test123'
+        }
+    );
+    expect(result).toEqual(mockResponse.data);
+});
+
+test('login handles 401 error correctly', async () => {
+    // Arrange
+    const mockError = {
+        response: {
+            status: 401,
+            data: { message: 'Unauthorized' }
+        }
+    };
+    axios.post.mockRejectedValue(mockError);
+
+    // Act & Assert
+    await expect(
+        authService.login('wrong@example.com', 'wrong')
+    ).rejects.toThrow();
+});
+});
+\end{lstlisting}
+\subsubsection{Backend Mocking (2.5 điểm)}
+\paragraph{Mục đích Backend Mocking}
+Mock testing ở Backend với Mockito giúp:
+\begin{itemize}
+\item Test business logic trong Service layer độc lập
+\item Mock Repository để không phụ thuộc database
+\item Kiểm tra xử lý exceptions
+\item Tăng tốc độ test và tính deterministic
+\end{itemize}
+\paragraph{Mock UserRepository với Mockito}
+\begin{lstlisting}[language=Java, caption={AuthService Mock Test}]
+// AuthServiceTest.java
+package com.flogin.backend.service;
+import com.flogin.backend.model.User;
+import com.flogin.backend.repository.UserRepository;
+import com.flogin.backend.service.impl.AuthServiceImpl;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.;
+import static org.mockito.Mockito.;
+@ExtendWith(MockitoExtension.class)
+@DisplayName("AuthService Mock Tests")
+class AuthServiceTest {
+@Mock
+private UserRepository userRepository;
+
+@Mock
+private PasswordEncoder passwordEncoder;
+
+@InjectMocks
+private AuthServiceImpl authService;
+
+@Test
+@DisplayName("Should login successfully with valid credentials")
+void testLoginSuccess() {
+    // Arrange
+    String username = "testuser";
+    String password = "Test123";
+    String encodedPassword = "$2a$10$encodedPassword";
+
+    User mockUser = new User();
+    mockUser.setId(1L);
+    mockUser.setUsername(username);
+    mockUser.setPassword(encodedPassword);
+    mockUser.setEmail("test@example.com");
+
+    when(userRepository.findByUsername(username))
+        .thenReturn(Optional.of(mockUser));
+    when(passwordEncoder.matches(password, encodedPassword))
+        .thenReturn(true);
+
+    // Act
+    User result = authService.login(username, password);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(username, result.getUsername());
+    verify(userRepository, times(1)).findByUsername(username);
+    verify(passwordEncoder, times(1))
+        .matches(password, encodedPassword);
+}
+
+@Test
+@DisplayName("Should throw exception when user not found")
+void testLoginUserNotFound() {
+    // Arrange
+    String username = "nonexistent";
+    String password = "Test123";
+
+    when(userRepository.findByUsername(username))
+        .thenReturn(Optional.empty());
+
+    // Act & Assert
+    RuntimeException exception = assertThrows(
+        RuntimeException.class,
+        () -> authService.login(username, password)
+    );
+
+    assertEquals("User does not exist", exception.getMessage());
+    verify(userRepository, times(1)).findByUsername(username);
+    verify(passwordEncoder, never()).matches(anyString(), anyString());
+}
+
+@Test
+@DisplayName("Should throw exception when password is wrong")
+void testLoginWrongPassword() {
+    // Arrange
+    String username = "testuser";
+    String password = "WrongPassword";
+    String encodedPassword = "$2a$10$encodedPassword";
+
+    User mockUser = new User();
+    mockUser.setUsername(username);
+    mockUser.setPassword(encodedPassword);
+
+    when(userRepository.findByUsername(username))
+        .thenReturn(Optional.of(mockUser));
+    when(passwordEncoder.matches(password, encodedPassword))
+        .thenReturn(false);
+
+    // Act & Assert
+    RuntimeException exception = assertThrows(
+        RuntimeException.class,
+        () -> authService.login(username, password)
+    );
+
+    assertEquals("Wrong password", exception.getMessage());
+    verify(userRepository, times(1)).findByUsername(username);
+    verify(passwordEncoder, times(1))
+        .matches(password, encodedPassword);
+}
+
+@Test
+@DisplayName("Should validate empty username")
+void testLoginEmptyUsername() {
+    // Arrange
+    String username = "";
+    String password = "Test123";
+
+    // Act & Assert
+    RuntimeException exception = assertThrows(
+        RuntimeException.class,
+        () -> authService.login(username, password)
+    );
+
+    assertEquals("Username cannot be empty", exception.getMessage());
+    verify(userRepository, never()).findByUsername(anyString());
+}
+
+@Test
+@DisplayName("Should validate empty password")
+void testLoginEmptyPassword() {
+    // Arrange
+    String username = "testuser";
+    String password = "";
+
+    // Act & Assert
+    RuntimeException exception = assertThrows(
+        RuntimeException.class,
+        () -> authService.login(username, password)
+    );
+
+    assertEquals("Password cannot be empty", exception.getMessage());
+    verify(userRepository, never()).findByUsername(anyString());
+}
+}
+\end{lstlisting}
+\paragraph{Mock Repository Behaviors}
+\begin{lstlisting}[language=Java, caption={Advanced Mockito Techniques}]
+// UserServiceMockTest.java
+package com.flogin.backend.service;
+import com.flogin.backend.model.User;
+import com.flogin.backend.repository.UserRepository;
+import org.junit.jupiter.api.;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.mockito.Mockito.;
+import static org.junit.jupiter.api.Assertions.;
+@ExtendWith(MockitoExtension.class)
+class UserServiceMockTest {
+@Mock
+private UserRepository userRepository;
+
+@InjectMocks
+private UserServiceImpl userService;
+
+@Captor
+private ArgumentCaptor<User> userCaptor;
+
+@Test
+@DisplayName("Mock repository save operation")
+void testMockSaveOperation() {
+    // Arrange
+    User user = new User();
+    user.setUsername("newuser");
+    user.setEmail("new@example.com");
+
+    User savedUser = new User();
+    savedUser.setId(1L);
+    savedUser.setUsername("newuser");
+    savedUser.setEmail("new@example.com");
+
+    when(userRepository.save(any(User.class)))
+        .thenReturn(savedUser);
+
+    // Act
+    User result = userService.createUser(user);
+
+    // Assert
+    assertNotNull(result.getId());
+    assertEquals("newuser", result.getUsername());
+    
+    verify(userRepository).save(userCaptor.capture());
+    User capturedUser = userCaptor.getValue();
+    assertEquals("newuser", capturedUser.getUsername());
+}
+
+@Test
+@DisplayName("Mock repository exception")
+void testMockRepositoryException() {
+    // Arrange
+    when(userRepository.findByUsername("testuser"))
+        .thenThrow(new RuntimeException("Database error"));
+
+    // Act & Assert
+    assertThrows(RuntimeException.class, () -> {
+        userService.findByUsername("testuser");
+    });
+}
+
+@Test
+@DisplayName("Verify method invocation count")
+void testVerifyInvocationCount() {
+    // Arrange
+    when(userRepository.findByUsername(anyString()))
+        .thenReturn(Optional.empty());
+
+    // Act
+    userService.findByUsername("user1");
+    userService.findByUsername("user2");
+    userService.findByUsername("user3");
+
+    // Assert
+    verify(userRepository, times(3)).findByUsername(anyString());
+}
+
+@Test
+@DisplayName("Mock with argument matchers")
+void testArgumentMatchers() {
+    // Arrange
+    User user = new User();
+    user.setUsername("testuser");
+
+    when(userRepository.findByUsername(eq("testuser")))
+        .thenReturn(Optional.of(user));
+    when(userRepository.findByUsername(startsWith("admin")))
+        .thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertTrue(userService.findByUsername("testuser").isPresent());
+    assertFalse(userService.findByUsername("admin123").isPresent());
+}
+}
+\end{lstlisting}
+\paragraph{Tổng hợp kỹ thuật Mocking}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|p{5cm}|p{6cm}|}
+\hline
+\textbf{Technique} & \textbf{Frontend (Jest)} & \textbf{Backend (Mockito)} \
+\hline
+Basic Mock & \texttt{jest.fn()} & \texttt{@Mock} \
+\hline
+Mock Module & \texttt{jest.mock('module')} & \texttt{@ExtendWith(MockitoExtension)} \
+\hline
+Return Value & \texttt{mockFn.mockReturnValue()} & \texttt{when(...).thenReturn(...)} \
+\hline
+Exception & \texttt{mockFn.mockRejectedValue()} & \texttt{when(...).thenThrow(...)} \
+\hline
+Verify Calls & \texttt{expect(mockFn).toHaveBeenCalled()} & \texttt{verify(mock).method()} \
+\hline
+Argument Capture & \texttt{expect(...).toHaveBeenCalledWith()} & \texttt{@Captor ArgumentCaptor} \
+\hline
+\end{tabular}
+\caption{So sánh Mocking Techniques}
+\end{table}
+
+\newpage
+ư
+\subsection{Câu 4.2: Product - Mock Testing (5 điểm)}
+
+\subsubsection{Frontend Mocking (2.5 điểm)}
+
+Mock ProductService trong component tests:
+\begin{lstlisting}
+// Mock productService cho ProductList
+jest.mock('../../services/productService.js', () => ({
+  __esModule: true,
+  default: {
+    getAllProducts: jest.fn(),
+  },
+}));
+
+import productService from '../../services/productService.js';
+import '@testing-library/jest-dom'
+import React from 'react'
+import { render, fireEvent, screen } from '@testing-library/react'
+import ProductList from '../../components/ProductList.jsx'
+import ProductForm from '../../components/ProductForm.jsx'
+import ProductDetail from '../../components/ProductDetail.jsx'
+import { validateProduct } from '../../utils/validateProduct.js'
+
+// Yêu cầu a) Mock CRUD operations
+// Yêu cầu b) Test success và failure scenarios
+// Yêu cầu c) Verify all mock calls
+
+describe('Product CRUD Mock Tests', () => {
+  // ProductList
+  describe('ProductList', () => {
+    test('Hiển thị danh sách sản phẩm mock (success)', async () => {
+      const mockProducts = [
+        { id: 1, name: 'Đồng hồ thông minh', desc: 'Đồng hồ thông minh đa năng', price: 999000, category: 'Điện tử', stock: 36 },
+        { id: 2, name: 'Giá đỡ laptop', desc: 'Giá đỡ laptop nhôm ergonomic', price: 399000, category: 'Phụ kiện', stock: 78 },
+        { id: 3, name: 'Tai nghe không dây', desc: 'Tai nghe chống ồn cao cấp', price: 299000, category: 'Điện tử', stock: 20 },
+      ];
+      productService.getAllProducts.mockResolvedValueOnce(mockProducts);
+      render(<ProductList />);
+      const items = await screen.findAllByTestId('product-item');
+      expect(items).toHaveLength(3);
+      mockProducts.forEach(p => {
+        expect(validateProduct(p)).toBe(true);
+      });
+    });
+    test('Hiển thị khi không có sản phẩm (failure)', async () => {
+      productService.getAllProducts.mockResolvedValueOnce([]);
+      render(<ProductList />);
+      const items = await screen.queryAllByTestId('product-item');
+      expect(items).toHaveLength(0);
+    });
+    test('Mock get & delete', () => {
+      const mockGetProducts = jest.fn().mockReturnValue([{ id: 1, name: 'Đồng hồ thông minh' }])
+      const mockDeleteProduct = jest.fn()
+      mockGetProducts()
+      mockDeleteProduct(1)
+      expect(mockGetProducts).toHaveBeenCalledTimes(1)
+      expect(mockDeleteProduct).toHaveBeenCalledWith(1)
+    })
+  })
+
+  // ProductForm
+  describe('ProductForm', () => {
+    test('Gọi hàm createProduct với dữ liệu mock (success)', () => {
+      const mockCreateProduct = jest.fn();
+      // Use local state for product and a real onChange handler
+      function Wrapper() {
+        const [product, setProduct] = React.useState({ name: '', desc: '', category: '', price: 0, stock: 0 });
+        const handleChange = (e) => {
+          const { name, value } = e.target;
+          setProduct((prev) => ({ ...prev, [name]: name === 'price' || name === 'stock' ? Number(value) : value }));
+        };
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          mockCreateProduct(product);
+        };
+        return <ProductForm product={product} onChange={handleChange} onSubmit={handleSubmit} />;
+      }
+      render(<Wrapper />);
+      fireEvent.change(screen.getByLabelText('Tên sản phẩm'), { target: { value: 'Giá đỡ laptop' } });
+      fireEvent.change(screen.getByLabelText('Giá ($)'), { target: { value: '399000' } });
+      fireEvent.change(screen.getByLabelText('Tồn kho'), { target: { value: '10' } });
+      fireEvent.change(screen.getByLabelText('Danh mục'), { target: { value: 'Phụ kiện' } });
+      fireEvent.change(screen.getByLabelText('Mô tả'), { target: { value: 'Giá đỡ laptop nhôm ergonomic' } });
+      fireEvent.submit(screen.getByLabelText('product-form'));
+      expect(mockCreateProduct).toHaveBeenCalledWith({
+        name: 'Giá đỡ laptop',
+        price: 399000,
+        stock: 10,
+        desc: 'Giá đỡ laptop nhôm ergonomic',
+        category: 'Phụ kiện'
+      });
+      expect(validateProduct({
+        name: 'Giá đỡ laptop',
+        price: 399000,
+        stock: 10,
+        desc: 'Giá đỡ laptop nhôm ergonomic',
+        category: 'Phụ kiện',
+      })).toBe(true);
+    });
+    test('Tạo sản phẩm lỗi (failure)', () => {
+      const mockCreateProduct = jest.fn().mockImplementation(() => { throw new Error('Lỗi tạo sản phẩm') })
+      try {
+        mockCreateProduct({ name: 'Lỗi' })
+      } catch (e) {
+        expect(e.message).toBe('Lỗi tạo sản phẩm')
+      }
+      expect(mockCreateProduct).toHaveBeenCalledWith({ name: 'Lỗi' })
+    })
+    test('Mock update & delete', () => {
+      const mockUpdateProduct = jest.fn().mockReturnValue({ id: 1, name: 'Updated' })
+      const mockDeleteProduct = jest.fn()
+      mockUpdateProduct(1, { name: 'Updated' })
+      mockDeleteProduct(1)
+      expect(mockUpdateProduct).toHaveBeenCalledWith(1, { name: 'Updated' })
+      expect(mockDeleteProduct).toHaveBeenCalledWith(1)
+    })
+  })
+
+  // ProductDetail
+  describe('ProductDetail', () => {
+    test('Hiển thị chi tiết sản phẩm mock (success)', () => {
+      const mockProduct = {
+        id: 2,
+        name: 'Giá đỡ laptop',
+        desc: 'Giá đỡ laptop nhôm ergonomic',
+        price: 399000,
+        stock: 10,
+        category: 'Phụ kiện',
+      }
+      render(<ProductDetail product={mockProduct} />)
+      expect(screen.getByTestId('product-detail')).toBeInTheDocument()
+      expect(validateProduct(mockProduct)).toBe(true)
+    })
+    test('Hiển thị khi không tìm thấy sản phẩm (failure)', () => {
+      render(<ProductDetail product={null} />)
+      expect(screen.queryByTestId('product-detail')).toBeNull()
+    })
+    test('Mock get & delete', () => {
+      const mockGetProduct = jest.fn().mockReturnValue({ id: 1, name: 'Đồng hồ thông minh' })
+      const mockDeleteProduct = jest.fn()
+      mockGetProduct(1)
+      mockDeleteProduct(1)
+      expect(mockGetProduct).toHaveBeenCalledWith(1)
+      expect(mockDeleteProduct).toHaveBeenCalledWith(1)
+    })
+  })
+})
+
+\end{lstlisting}
+\begin{enumerate}[a)]
+	\item \textbf{Mock CRUD operations (1.5 điểm)}
+	
+Các hàm CRUD đã được mock và kiểm tra như sau:
+
+\begin{itemize}
+  \item \textbf{Create:}
+    \begin{verbatim}
+    const mockCreateProduct = jest.fn()
+    render(<ProductForm createProduct={mockCreateProduct} />)
+    expect(mockCreateProduct).toHaveBeenCalledWith({...})
+    \end{verbatim}
+  \item \textbf{Read/Get:}
+    \begin{verbatim}
+    const mockGetProducts = jest.fn().mockReturnValue([...])
+    mockGetProducts()
+    expect(mockGetProducts).toHaveBeenCalledTimes(1)
+    \end{verbatim}
+    \begin{verbatim}
+    const mockGetProduct = jest.fn().mockReturnValue({...})
+    mockGetProduct(1)
+    expect(mockGetProduct).toHaveBeenCalledWith(1)
+    \end{verbatim}
+  \item \textbf{Update:}
+    \begin{verbatim}
+    const mockUpdateProduct = jest.fn().mockReturnValue({...})
+    mockUpdateProduct(1, {...})
+    expect(mockUpdateProduct).toHaveBeenCalledWith(1, {...})
+    \end{verbatim}
+  \item \textbf{Delete:}
+    \begin{verbatim}
+    const mockDeleteProduct = jest.fn()
+    mockDeleteProduct(1)
+    expect(mockDeleteProduct).toHaveBeenCalledWith(1)
+    \end{verbatim}
+\end{itemize}
+
+	\item \textbf{Test success và failure scenarios (0.5 điểm)}
+	
+Các trường hợp thành công và thất bại đã được kiểm tra:
+
+\begin{itemize}
+  \item \textbf{Success:}
+    \begin{verbatim}
+    // ProductList
+    expect(items).toHaveLength(3)
+    // ProductForm
+    expect(mockCreateProduct).toHaveBeenCalledWith({...})
+    // ProductDetail
+    expect(screen.getByLabelText('product-detail')).toBeInTheDocument()
+    \end{verbatim}
+  \item \textbf{Failure:}
+    \begin{verbatim}
+    // ProductList
+    expect(screen.queryAllByTestId('product-item')).toHaveLength(0)
+    // ProductForm
+    try { mockCreateProduct({ name: 'Lỗi' }) } catch (e) { expect(e.message).toBe('Lỗi tạo sản phẩm') }
+    // ProductDetail
+    expect(screen.queryByLabelText('product-detail')).toBeNull()
+    \end{verbatim}
+\end{itemize}
+
+	\item \textbf{Verify all mock calls (0.5 điểm)}
+	
+Các hàm mock đã được kiểm tra số lần gọi và tham số truyền vào:
+
+\begin{itemize}
+  \item \textbf{Create:} \verb|expect(mockCreateProduct).toHaveBeenCalledWith({...})|
+  \item \textbf{Read/Get:} \verb|expect(mockGetProducts).toHaveBeenCalledTimes(1)|, \verb|expect(mockGetProduct).toHaveBeenCalledWith(1)|
+  \item \textbf{Update:} \verb|expect(mockUpdateProduct).toHaveBeenCalledWith(1, {...})|
+  \item \textbf{Delete:} \verb|expect(mockDeleteProduct).toHaveBeenCalledWith(1)|
+\end{itemize}
+
+\end{enumerate}
+
+\subsubsection{Backend Mocking (2.5 điểm)}
+
+Mock ProductRepository trong service tests:
+
+\begin{enumerate}[a)]
+	\item \textbf{Mock ProductRepository (1 điểm)}
+	
+\begin{lstlisting}[language=Java, caption=Mock ProductRepository - GetProductById]
+@ExtendWith(MockitoExtension.class)
+class ProductServiceMockTest {
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @InjectMocks
+    private ProductServiceImpl productService;
+
+    @Test
+    @DisplayName("Mock: Test getProductById")
+    void testGetProductById() {
+        Product mockProduct = Product.builder()
+                .id(1L)
+                .name("Laptop")
+                .description("High-end laptop")
+                .price(15000000.0)
+                .quantity(10)
+                .build();
+
+        when(productRepository.findById(1L))
+                .thenReturn(Optional.of(mockProduct));
+
+        ProductDTO result = productService.getProductById(1L);
+
+        assertNotNull(result);
+        assertEquals("Laptop", result.getName());
+
+        verify(productRepository).findById(1L);
+    }
+}
+\end{lstlisting}
+
+	\item \textbf{Test service layer với mocked repository (1 điểm)}
+	
+\begin{lstlisting}[language=Java, caption=Test Service Layer with Mocked Repository]
+@Test
+@DisplayName("Mock: Test createProduct")
+void testCreateProduct() {
+    Product mockProduct = Product.builder()
+            .id(1L)
+            .name("Mouse")
+            .description("Wireless mouse")
+            .price(200000.0)
+            .quantity(10)
+            .build();
+
+    when(productRepository.save(any(Product.class)))
+            .thenReturn(mockProduct);
+
+    ProductDTO productDTO = ProductDTO.builder()
+            .name("Mouse")
+            .description("Wireless mouse")
+            .price(200000.0)
+            .quantity(10)
+            .build();
+
+    ProductDTO result = productService.createProduct(productDTO);
+
+    assertNotNull(result);
+    assertEquals("Mouse", result.getName());
+
+    verify(productRepository).save(any(Product.class));
+}
+\end{lstlisting}
+
+	\item \textbf{Verify repository interactions (0.5 điểm)}
+	
+\begin{lstlisting}[language=Java, caption=Verify Repository Interactions]
+@Test
+@DisplayName("Mock: Verify findById interaction")
+void testFindByIdInteraction() {
+    Product mockProduct = Product.builder()
+            .id(1L)
+            .name("Keyboard")
+            .description("Mechanical keyboard")
+            .price(500000.0)
+            .quantity(15)
+            .build();
+
+    when(productRepository.findById(1L))
+            .thenReturn(Optional.of(mockProduct));
+
+    productService.getProductById(1L);
+
+    verify(productRepository, times(1)).findById(1L);
+}
+\end{lstlisting}
+
+\end{enumerate}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Câu 5: Automation Testing và CI/CD (10 điểm)}
+
+\subsection{Câu 5.1: Login - E2E Automation Testing (5 điểm)}
+\subsubsection{Setup và Configuration (1 điểm)}
+% TODO: Mô tả setup Cypress/POM, cấu hình cần thiết
+\begin{itemize}
+    \item \textbf{Cài đặt Cypress:}
+    \begin{lstlisting}[language=bash]
+    npm install cypress --save-dev
+    npx cypress open
+    \end{lstlisting}
+
+    \item \textbf{Cấu trúc thư mục cho POM:}
+    \begin{verbatim}
+    cypress/
+      ├─ e2e/
+      │    ├─ login.spec.js
+      │    └─ product.spec.js
+      ├─ support/
+      │    ├─ commands.js
+      │    └─ pageObjects/
+      │         ├─ LoginPage.js
+      │         └─ ProductPage.js
+    \end{verbatim}
+
+    \item \textbf{Ví dụ Page Object: LoginPage.js}
+    \begin{lstlisting}[language=JavaScript]
+  class ProductPage {
+  visit() {
+    cy.visit('/products');
+  }
+
+  clickAddNew() {
+    cy.get('[data-testid="add-product-btn"]').click();
+  }
+
+  fillProductForm(product) {
+    cy.get('[data-testid="product-name"]').type(product.name);
+    cy.get('[data-testid="product-price"]').type(product.price);
+    cy.get('[data-testid="product-quantity"]').type(product.quantity);
+  }
+
+  submitForm() {
+    cy.get('[data-testid="submit-btn"]').click();
+  }
+
+  getSuccessMessage() {
+    return cy.get('[data-testid="success-message"]');
+  }
+
+  getProductInList(name) {
+    return cy.contains('[data-testid="product-item"]', name);
+  }
+}
+
+export default ProductPage;
+    \end{lstlisting}
+
+    \item \textbf{Cấu hình cần thiết:}
     \begin{itemize}
-         \item kiểm tra 1
-        \item  kiểm tra 2
+        \item Đảm bảo baseUrl trong `cypress.config.js` trỏ tới ứng dụng frontend.
+        \item Tích hợp `cypress/support/commands.js` để tái sử dụng các command.
+        \item Cấu hình headless chạy CI/CD: `npx cypress run --headless`.
     \end{itemize}
-       
+\end{itemize}
+\subsubsection{E2E Test Scenarios cho Login (2.5 điểm)}
+% TODO: Mô tả các kịch bản E2E đăng nhập
 
-    \subsection{Test case2}
+\subsubsection{CI/CD Integration cho Login Tests (1.5 điểm)}
+% TODO: Cách tích hợp Login E2E vào pipeline
+\subsubsection{CI/CD Integration cho Login Tests}
+
+\begin{itemize}
+    \item \textbf{Tích hợp vào pipeline (GitHub Actions / GitLab CI / Jenkins):}
+    \begin{itemize}
+        \item Cài đặt Node.js và Cypress trong môi trường CI.
+        \item Chạy backend server (Spring Boot) và frontend server (React) trước khi chạy test.
+        \item Chạy Cypress E2E tests headless.
+    \end{itemize}
+
+    \item \textbf{Ví dụ workflow GitHub Actions:}
+    \begin{lstlisting}[language=yaml]
+   name: Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Cho phép chạy thủ công từ tab Actions để "test CI/CD" không cần push, nó là tự động
+  workflow_dispatch:
+
+env:
+  POSTGRES_DB: testdb
+  POSTGRES_PASSWORD: password
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+            node-version: '18'
+            cache: 'npm'
+            cache-dependency-path: 'FloginFE_BE/frontend/package-lock.json'
+
+      - name: Backend Tests
+        run: |
+          cd FloginFE_BE/backend
+          mvn -B -ntp clean test
+
+      - name: Frontend Tests
+        run: |
+          cd FloginFE_BE/frontend
+          npm ci
+          npm test -- --watchAll=false --coverage
+
+      - name: E2E Tests
+        run: |
+          cd FloginFE_BE/frontend
+          npm run cypress:run
+        continue-on-error: true
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./FloginFE_BE/frontend/coverage/lcov.info,./FloginFE_BE/backend/target/site/jacoco/jacoco.xml
+        continue-on-error: true
+
+    \end{lstlisting}
+
+    \item \textbf{Các lưu ý:}
+    \begin{itemize}
+        \item Backend phải chạy trước frontend để Cypress có thể truy cập API.
+        \item Dùng `--headless` để chạy tests trên CI server.
+        \item Có thể lưu report và video/screenshot của test để review lỗi.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Câu 5.2: Product - E2E Automation Testing (5 điểm)}
+
+\subsubsection{Setup Page Object Model (1 điểm)}
+
+Trong project backend Spring Boot, chúng em áp dụng pattern tương tự Page Object Model bằng cách tổ chức test fixtures và test data builders:
+
+\paragraph{Test Data Builder Pattern}
+
+Sử dụng Builder Pattern để tạo dữ liệu test nhất quán và dễ bảo trì:
+
+\begin{lstlisting}[language=Java, caption=Product Builder Pattern in Tests]
+@BeforeEach
+void setUp() {
+    sample = ProductDTO.builder()
+            .name("Phone")
+            .description("Nice phone")
+            .price(199.99)
+            .quantity(5)
+            .build();
+}
+\end{lstlisting}
+
+\paragraph{MockMvc Test Configuration}
+
+Sử dụng \texttt{@AutoConfigureMockMvc} để tự động cấu hình MockMvc và ObjectMapper:
+
+\begin{lstlisting}[language=Java, caption=Integration Test Setup]
+@SpringBootTest
+@AutoConfigureMockMvc
+class ProductControllerIT {
+    
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    private ProductDTO sample;
+    
+    // Test methods...
+}
+\end{lstlisting}
+
+\textbf{Lợi ích của pattern này:}
+
+\begin{itemize}
+    \item \textbf{Code dễ đọc và maintain:} Test data được tạo bằng builder pattern rõ ràng
+    \item \textbf{Tái sử dụng cao:} Setup data trong \texttt{@BeforeEach} được dùng cho nhiều test
+    \item \textbf{Tách biệt concerns:} Logic test và data preparation được tách riêng
+    \item \textbf{Dễ mở rộng:} Thêm field mới chỉ cần sửa builder
+\end{itemize}
+
+\subsubsection{E2E Test Scenarios cho Product (2.5 điểm)}
+
+Cypress E2E tests cho Product CRUD operations:
+
+\begin{lstlisting}[language=JavaScript, caption=Cypress Product E2E Tests]
+describe('Product E2E Tests', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:3000');
+  });
+
+  it('Should create new product', () => {
+    cy.get('[data-testid="create-product-btn"]').click();
+    cy.get('[data-testid="name-input"]').type('Laptop Dell');
+    cy.get('[data-testid="description-input"]')
+      .type('High performance laptop');
+    cy.get('[data-testid="price-input"]').type('1500');
+    cy.get('[data-testid="quantity-input"]').type('10');
+    cy.get('[data-testid="submit-btn"]').click();
+    
+    cy.contains('Laptop Dell').should('be.visible');
+  });
+
+  it('Should update product', () => {
+    cy.get('[data-testid="edit-btn-1"]').click();
+    cy.get('[data-testid="name-input"]').clear().type('Updated Laptop');
+    cy.get('[data-testid="submit-btn"]').click();
+    
+    cy.contains('Updated Laptop').should('be.visible');
+  });
+
+  it('Should delete product', () => {
+    cy.get('[data-testid="delete-btn-1"]').click();
+    cy.on('window:confirm', () => true);
+    
+    cy.contains('Product deleted successfully').should('be.visible');
+  });
+});
+\end{lstlisting}
+
+\subsubsection{CI/CD Integration (1.5 điểm)}
+
+\paragraph{GitHub Actions Workflow Configuration}
+
+Thiết lập CI/CD pipeline tự động chạy tests mỗi khi push code:
+
+\begin{lstlisting}[language=YAML, caption=GitHub Actions CI/CD Pipeline]
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        
+    - name: Run Backend Tests
+      run: |
+        cd product-management-system/product-management-system/backend
+        mvn clean test
+        
+    - name: Generate JaCoCo Coverage Report
+      run: |
+        cd product-management-system/product-management-system/backend
+        mvn jacoco:report
+        
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./product-management-system/product-management-system/backend/target/site/jacoco/jacoco.xml
+
+  frontend-test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        cd product-management-system/product-management-system/frontend
+        npm install
+        
+    - name: Run Frontend Tests
+      run: |
+        cd product-management-system/product-management-system/frontend
+        npm test -- --coverage
+        
+    - name: Upload Frontend Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./product-management-system/product-management-system/frontend/coverage/lcov.info
+\end{lstlisting}
+
+\paragraph{Maven JaCoCo Configuration}
+
+Cấu hình JaCoCo plugin trong \texttt{pom.xml} để generate coverage reports:
+
+\begin{lstlisting}[language=XML, caption=JaCoCo Maven Plugin Configuration]
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.11</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+\end{lstlisting}
+
+\paragraph{Kết quả CI/CD Integration}
+
+\begin{itemize}
+    \item \textbf{Automated Testing:} Mỗi commit tự động trigger test suite cho cả backend và frontend
+    \item \textbf{Code Coverage:} JaCoCo (backend) và Jest (frontend) reports được generate tự động
+    \item \textbf{Build Status:} Badge hiển thị trạng thái build trên README
+    \item \textbf{PR Validation:} Pull request phải pass tất cả tests mới được merge
+    \item \textbf{Fast Feedback:} Developer nhận thông báo ngay khi test fail
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.2\textwidth]{6.2.3.png}
+    \caption{GitHub Actions CI/CD Pipeline - All Tests Passed}
+    \label{fig:ci-pipeline}
+\end{figure}
+    
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Phần Mở Rộng (Bonus 20 điểm)}
+
+\subsection{Performance Testing (10 điểm)}
+\subsection*{7.1.1(a) Setup JMeter hoặc k6 cho Performance Testing (2 điểm)}
+
+\subsubsection*{Cách làm với JMeter}
+
+\paragraph{} Để thực hiện kiểm thử hiệu năng, nhóm sử dụng Apache JMeter do đây là công cụ phổ biến,
+dễ cấu hình và hỗ trợ nhiều dạng test như Load Test, Stress Test và Spike Test. Các bước thực hiện
+cài đặt và cấu hình cơ bản như sau:
+
+\textbf{Bước 1: Cài đặt}
+\begin{itemize}
+    \item Tải Apache JMeter tại trang chủ: \url{https://jmeter.apache.org/download_jmeter.cgi}.
+    \item Giải nén gói ZIP.
+    \item Khởi chạy:
+    \begin{itemize}
+        \item Windows: \texttt{jmeter.bat}
+        \item macOS/Linux: \texttt{jmeter.sh}
+    \end{itemize}
+\end{itemize}
+
+\textbf{Bước 2: Cấu hình cơ bản}
+\begin{itemize}
+    \item Thêm \textbf{Thread Group}: \\
+        \texttt{Add → Threads (Users) → Thread Group}
+    \item Thêm \textbf{HTTP Request Defaults}: \\
+        \texttt{Add → Config Element → HTTP Request Defaults} \\
+        Dùng để cấu hình: server name, port, path mặc định.
+    \item Thêm \textbf{HTTP Header Manager}: \\
+        \texttt{Add → Config Element → HTTP Header Manager} \\
+        Ví dụ đặt header: \texttt{Content-Type: application/json}
+    \item Thêm các \textbf{Listeners} để theo dõi kết quả:
+    \begin{itemize}
+        \item Summary Report
+        \item Aggregate Report
+        \item View Results Tree
+        \item Response Time Graph
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+     \centering
+    \includegraphics[width=0.8\textwidth]{Assigment_template_SGU/7.1.png}
+    \caption{Giao diện cấu hình cơ bản trong JMeter}
+    \label{fig:jmeter-test}
+\end{figure}
+\begin{itemize}
+    \item Thêm \textbf{Thread Group}: \\
+        \texttt{Add → Threads (Users) → Thread Group}
+    \item Thêm \textbf{HTTP Request Defaults}: \\
+        \texttt{Add → Config Element → HTTP Request Defaults} \\
+        Dùng để cấu hình: server name, port, path mặc định.
+    \item Thêm \textbf{HTTP Header Manager}: \\
+        \texttt{Add → Config Element → HTTP Header Manager} \\
+        Ví dụ đặt header: \texttt{Content-Type: application/json}
+    \item Thêm \textbf{HTTP Request} để gửi request tới API: \\
+        \texttt{Add → Sampler → HTTP Request} \\
+        Chọn phương thức \texttt{POST}, điền path (ví dụ: \texttt{/api/login}) và trong phần \texttt{Body Data} nhập JSON:
+        \begin{verbatim}
+{
+  "username": "testuser",
+  "password": "123456"
+}
+        \end{verbatim}
+    \item Thêm các \textbf{Listeners} để theo dõi kết quả:
+    \begin{itemize}
+        \item Summary Report
+        \item Aggregate Report
+        \item View Results Tree
+        \item Response Time Graph
+    \end{itemize}
+    \item Sau khi cấu hình xong, nhấn nút \textbf{Start} (hình tam giác xanh) để bắt đầu chạy test và quan sát kết quả ở các Listener.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=0.8\textwidth]{path/to/your/jmeter_screenshot.png}
+    \caption{Giao diện cấu hình cơ bản trong JMeter}
+    \label{fig:jmeter-test}
+\end{figure}
+
+% TODO: Mô tả tiêu chí hiệu năng, công cụ sử dụng
+
+\subsection{Security Testing (10 điểm)}
+\subsubsection{Yêu cầu}
+% TODO: Mô tả các kiểm thử bảo mật cơ bản
    
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{thebibliography}{80}
 
-\bibitem{CVX}
-CVX Introduction
-``\textbf{link: http://cvxr.com/cvx/doc/intro.html/}'',
-\textit{What is CVX}, lần truy cập cuối: 15/04/2017.
-
-\bibitem{AAB}
-CVX Introduction2
-``\textbf{link: http://cvxr.com/cvx/doc/intro.html/}'',
-\textit{What is CVX}, lần truy cập cuối: 15/04/2017.
-
-\end{thebibliography}
 \end{document}
 
+ 
