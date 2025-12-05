@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = {com.flogin.FloginApplication.class, com.flogin.config.TestSecurityConfig.class})
+@SpringBootTest(classes = com.flogin.FloginApplication.class)
 @AutoConfigureMockMvc
 @Transactional
 public class ProductControllerIntegrationTest {

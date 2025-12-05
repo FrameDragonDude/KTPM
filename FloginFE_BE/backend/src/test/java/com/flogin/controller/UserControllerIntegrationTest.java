@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 4.1.2 Backend API Integration Test
  * Test API endpoints của Login với MockMvc
  */
-@SpringBootTest(classes = {com.flogin.FloginApplication.class, com.flogin.config.TestSecurityConfig.class})
+@SpringBootTest(classes = com.flogin.FloginApplication.class)
 @AutoConfigureMockMvc
 @Transactional
 public class UserControllerIntegrationTest {
