@@ -103,6 +103,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/flogin/config/SecurityConfig.class</exclude>
+                        <exclude>com/flogin/config/WebConfig.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
