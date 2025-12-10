@@ -1,9 +1,12 @@
-export function validateLogin(email, password) {
-  // Kiểm tra email
-  if (typeof email !== 'string' || email.trim() === '') return false;
-  if (!/^\S+@\S+\.\S+$/.test(email)) return false;
+export function validateLogin(username, password) {
+  // Kiểm tra username
+  if (typeof username !== 'string' || username.trim() === '') return false;
+  if (username.length < 3 || username.length > 50) return false;
+  if (!/^[a-zA-Z0-9\-._]+$/.test(username)) return false;
   // Kiểm tra password
-  if (typeof password !== 'string' || password.length < 6) return false;
+  if (typeof password !== 'string' || password.trim() === '') return false;
+  if (password.length < 6 || password.length > 100) return false;
+  if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) return false;
   return true;
 }
 export function validateUsername(u) {

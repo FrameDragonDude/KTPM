@@ -14,6 +14,7 @@ module.exports = {
     'src/**/*.{js,jsx}',
     '!src/index.js',
     '!src/setupTests.js',
-    '!src/main/**',
+    '!src/**/*.test.{js,jsx}',
+    '!src/**/*.spec.{js,jsx}',
   ],
 };
