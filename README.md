@@ -47,6 +47,10 @@ cd frontend
 npm install
 npm start
 ```
+##Cypress
+```bash
+npx cypress open
+```
 ## Cấu trúc package backend
 
 Backend sử dụng package gốc `com.flogin` gồm các thư mục:
