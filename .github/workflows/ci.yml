@@ -59,10 +59,23 @@ jobs:
           npm ci
           npm test -- --watchAll=false --coverage
 
+      - name: Create application-ci.properties
+        run: |
+          cat > FloginFE_BE/backend/src/main/resources/application-ci.properties << 'EOF'
+          server.port=8080
+          spring.datasource.url=jdbc:mysql://localhost:3306/KTPM
+          spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+          spring.datasource.username=root
+          spring.datasource.password=19092005
+          spring.jpa.hibernate.ddl-auto=update
+          spring.jpa.show-sql=true
+          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+          EOF
+
       - name: Start Backend
         run: |
           cd FloginFE_BE/backend
-          mvn -B -ntp clean spring-boot:run -DskipTests &
+          mvn -B -ntp clean spring-boot:run -Dspring.profiles.active=ci -DskipTests &
           sleep 10
 
       - name: Start Frontend Dev Server
