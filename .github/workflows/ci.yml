@@ -11,8 +11,8 @@ on:
   workflow_dispatch:
 
 env:
-  MYSQL_DATABASE: testdb
-  MYSQL_ROOT_PASSWORD: password
+  MYSQL_DATABASE: KTPM
+  MYSQL_ROOT_PASSWORD: 19092005
 
 jobs:
   test:
@@ -21,8 +21,8 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: testdb
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: KTPM
+          MYSQL_ROOT_PASSWORD: 19092005
         ports:
           - 3306:3306
         options: >-
@@ -53,57 +53,11 @@ jobs:
           cd FloginFE_BE/backend
           mvn -B -ntp clean test
 
-      - name: Create application-ci.properties
-        run: |
-          cat > FloginFE_BE/backend/src/main/resources/application-ci.properties << 'EOF'
-          server.port=8080
-          spring.datasource.url=jdbc:mysql://localhost:3306/testdb
-          spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-          spring.datasource.username=root
-          spring.datasource.password=password
-          spring.jpa.hibernate.ddl-auto=create-drop
-          spring.jpa.show-sql=true
-          spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
-          app.default.name=KTPM
-          app.default.username=admin
-          app.default.password=Admin123
-          EOF
-
       - name: Frontend Tests
         run: |
           cd FloginFE_BE/frontend
           npm ci
           npm test -- --watchAll=false --coverage
-
-      - name: Start Backend
-        run: |
-          cd FloginFE_BE/backend
-          mvn -B -ntp clean spring-boot:run -Dspring.profiles.active=ci -DskipTests &
-          sleep 10
-        continue-on-error: true
-
-      - name: Wait for Backend
-        run: |
-          timeout=60
-          while [ $timeout -gt 0 ]; do
-            if curl -s http://localhost:8080/actuator/health > /dev/null 2>&1; then
-              echo "Backend is ready"
-              exit 0
-            fi
-            echo "Waiting for backend... ($timeout seconds left)"
-            sleep 2
-            timeout=$((timeout - 2))
-          done
-          echo "Backend failed to start"
-          exit 1
-        continue-on-error: true
-
-      - name: Start Frontend Dev Server
-        run: |
-          cd FloginFE_BE/frontend
-          npm start &
-          sleep 10
-        continue-on-error: true
 
       - name: E2E Tests
         run: |
