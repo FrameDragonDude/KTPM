@@ -50,6 +50,7 @@ npm start
 ##Cypress
 ```bash
 npx cypress open
+pnpm cypress open
 ```
 ## Cấu trúc package backend
 
