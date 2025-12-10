@@ -7,7 +7,7 @@ describe('Login Component', () => {
   test('renders login form', () => {
     render(<Login />);
     expect(screen.getByText(/Hệ Thống Quản Lý Sản Phẩm/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Đăng nhập/i })).toBeInTheDocument();
   });

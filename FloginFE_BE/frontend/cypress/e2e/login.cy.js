@@ -13,11 +13,11 @@ describe('Login E2E Tests', () => {
       statusCode: 200,
       body: {
         token: 'dummy-jwt-token',
-        user: { email: 'admin@example.com' }
+        user: { username: 'admin' }
       }
     }).as('loginRequest');
 
-    cy.get('#email').type('admin@example.com');
+    cy.get('#username').type('admin');
     cy.get('#password').type('Admin123');
     cy.get('#loginBtn').click();
 
@@ -30,22 +30,30 @@ describe('Login E2E Tests', () => {
   it('should show validation errors when fields are empty', () => {
     cy.get('#loginBtn').click();
 
-    cy.get('.error-message').should('contain', 'Email is required');
+    cy.get('.error-message').should('contain', 'Username is required');
   });
 
   it('should show password required error', () => {
-    cy.get('#email').type('test@example.com');
+    cy.get('#username').type('testuser');
     cy.get('#loginBtn').click();
 
     cy.get('.error-message').should('contain', 'Password is required');
   });
 
-  it('should show email format error', () => {
-    cy.get('#email').type('invalid@email');
+  it('should validate username and password', () => {
+    cy.intercept('POST', apiUrl, {
+      statusCode: 401,
+      body: {
+        message: 'Invalid credentials'
+      }
+    }).as('loginFail');
+
+    cy.get('#username').type('testuser');
     cy.get('#password').type('123456');
     cy.get('#loginBtn').click();
 
-    cy.get('.error-message').should('contain', 'Invalid email format');
+    cy.wait('@loginFail');
+    cy.get('.error-message').should('contain', 'Invalid credentials');
   });
 
   // c) Test error flow từ backend
@@ -57,7 +65,7 @@ describe('Login E2E Tests', () => {
       }
     }).as('loginFail');
 
-    cy.get('#email').type('wrong@example.com');
+    cy.get('#username').type('wronguser');
     cy.get('#password').type('wrongpass');
     cy.get('#loginBtn').click();
 
@@ -67,8 +75,8 @@ describe('Login E2E Tests', () => {
   });
 
   // d) UI interactions
-  it('should allow typing into email and password fields', () => {
-    cy.get('#email').type('abc@test.com').should('have.value', 'abc@test.com');
+  it('should allow typing into username and password fields', () => {
+    cy.get('#username').type('testuser').should('have.value', 'testuser');
     cy.get('#password').type('mypassword').should('have.value', 'mypassword');
   });
 });

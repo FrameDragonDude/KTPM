@@ -24,7 +24,7 @@ describe('Login Component Integration Tests', () => {
     test('renders all form elements correctly', async () => {
       render(<Login onLogin={() => {}} />);
       const toggleButton = screen.getByRole('button', { name: /hiện mật khẩu/i });
-      const emailInput = screen.getByLabelText(/Email/i);
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       const rememberCheckbox = screen.getByRole('checkbox');
@@ -81,7 +81,7 @@ describe('Login Component Integration Tests', () => {
     
       // ...existing code...
 
-    test('does not submit with empty email', async () => {
+    test('does not submit with empty username', async () => {
       const mockOnLogin = jest.fn();
       
       render(<Login onLogin={mockOnLogin} />);
@@ -102,9 +102,9 @@ describe('Login Component Integration Tests', () => {
     test('does not submit with empty password', async () => {
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
-      const emailInput = screen.getByLabelText(/Email/i);
+      const emailInput = screen.getByLabelText(/Username/i);
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(emailInput, 'admin');
       await userEvent.click(submitButton);
       expect(screen.getByText(/Vui lòng nhập đầy đủ thông tin/i)).toBeInTheDocument();
       expect(mockOnLogin).not.toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('Login Component Integration Tests', () => {
       
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
@@ -139,12 +139,12 @@ describe('Login Component Integration Tests', () => {
     test('clears error message on successful login', async () => {
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
-      const emailInput = screen.getByLabelText(/Email/i);
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const rememberCheckbox = screen.getByRole('checkbox');
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       await act(async () => {
-        await userEvent.type(emailInput, 'test@example.com');
+        await userEvent.type(emailInput, 'testuser');
         await userEvent.type(passwordInput, 'TestPass123');
         await userEvent.click(rememberCheckbox);
       });
@@ -155,7 +155,7 @@ describe('Login Component Integration Tests', () => {
       await act(async () => {
         await userEvent.clear(emailInput);
         await userEvent.clear(passwordInput);
-        await userEvent.type(emailInput, 'admin@example.com');
+        await userEvent.type(emailInput, 'admin');
         await userEvent.type(passwordInput, 'Admin123');
         await userEvent.click(submitButton);
       });
@@ -175,11 +175,11 @@ describe('Login Component Integration Tests', () => {
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i, { selector: 'input' });
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'test@example.com');
+      await userEvent.type(emailInput, 'wronguser');
       await userEvent.type(passwordInput, 'WrongPass');
       await userEvent.click(submitButton);
       
@@ -189,10 +189,10 @@ describe('Login Component Integration Tests', () => {
     test('handles network error', async () => {
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
-      const emailInput = screen.getByLabelText(/Email/i, { selector: 'input' });
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      await userEvent.type(emailInput, 'test@example.com');
+      await userEvent.type(emailInput, 'testuser');
       await userEvent.type(passwordInput, 'Test123');
       await userEvent.click(submitButton);
       expect(mockOnLogin).not.toHaveBeenCalled();
@@ -201,7 +201,7 @@ describe('Login Component Integration Tests', () => {
     test('error message disappears after correcting input', async () => {
       render(<Login onLogin={() => {}} />);
       
-      const emailInput = screen.getByLabelText(/Email/i, { selector: 'input' });
+      const emailInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
@@ -210,7 +210,7 @@ describe('Login Component Integration Tests', () => {
       expect(screen.getByText(/Vui lòng nhập đầy đủ thông tin/i)).toBeInTheDocument();
       
       // Fill in credentials
-      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(emailInput, 'admin');
       await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
@@ -235,15 +235,15 @@ describe('Login Component Integration Tests', () => {
     test('maintains form state during interaction', async () => {
       render(<Login onLogin={() => {}} />);
       
-      const emailInput = screen.getByLabelText(/Email/i, { selector: 'input' });
+      const usernameInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const rememberCheckbox = screen.getByRole('checkbox');
       
-      await userEvent.type(emailInput, 'test@example.com');
+      await userEvent.type(usernameInput, 'testuser');
       await userEvent.type(passwordInput, 'TestPass123');
       await userEvent.click(rememberCheckbox);
       
-      expect(emailInput).toHaveValue('test@example.com');
+      expect(usernameInput).toHaveValue('testuser');
       expect(passwordInput).toHaveValue('TestPass123');
       expect(rememberCheckbox).toBeChecked();
     });

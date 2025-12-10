@@ -12,7 +12,7 @@ describe('Login Form Validation', () => {
   });
 
   test('renders all input fields and login button', () => {
-    expect(screen.getByPlaceholderText('admin@example.com')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('admin')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Nhập mật khẩu của bạn')).toBeInTheDocument();
     expect(screen.getByText('Đăng nhập')).toBeInTheDocument();
   });
@@ -23,7 +23,7 @@ describe('Login Form Validation', () => {
   });
 
   test('shows error on wrong credentials', () => {
-    fireEvent.change(screen.getByPlaceholderText('admin@example.com'), { target: { value: 'wrong@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('admin'), { target: { value: 'wronguser' } });
     fireEvent.change(screen.getByPlaceholderText('Nhập mật khẩu của bạn'), { target: { value: 'WrongPass' } });
     fireEvent.click(screen.getByText('Đăng nhập'));
     expect(screen.getByText('Sai tài khoản hoặc mật khẩu.')).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe('Login Form Validation', () => {
   });
 
   test('calls onLogin on correct credentials', () => {
-    fireEvent.change(screen.getByPlaceholderText('admin@example.com'), { target: { value: 'admin@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('admin'), { target: { value: 'admin' } });
     fireEvent.change(screen.getByPlaceholderText('Nhập mật khẩu của bạn'), { target: { value: 'Admin123' } });
     fireEvent.click(screen.getByText('Đăng nhập'));
     expect(mockOnLogin).toHaveBeenCalledTimes(1);

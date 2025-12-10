@@ -3,127 +3,111 @@ import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from '../../components/Login';
-import { login } from '../../services/authService';
 
-// Mock authService.loginUser()
-jest.mock('../../services/authService');
+// Mock global fetch
+global.fetch = jest.fn();
 
 /**
- * Frontend Mocking
- * Mock external dependencies cho Login component
+ * Frontend Mocking - Mock fetch API instead of service
  */
 describe('Login Component Mock Tests', () => {
   
   beforeEach(() => {
     jest.clearAllMocks();
+    global.fetch.mockClear();
+    localStorage.clear();
   });
 
-  // Test với mocked successful responses
   describe('Test with Mocked Successful Responses', () => {
     
-    test('handles successful login with mocked authService', async () => {
-      // Mock successful login response
+    test('handles successful login with mocked fetch', async () => {
       const mockUser = {
         id: 1,
         username: 'admin',
-        email: 'admin@example.com',
-        fullName: 'Admin User',
-        token: 'fake-jwt-token-12345'
+        fullName: 'Admin User'
       };
       
-      login.mockResolvedValueOnce({ data: mockUser });
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser, token: 'fake-jwt-token' })
+      });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
+      const usernameInput = screen.getByLabelText(/Username/i);
       const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'admin@example.com');
+      await userEvent.type(usernameInput, 'admin');
       await userEvent.type(passwordInput, 'Admin123');
       await userEvent.click(submitButton);
       
-      // Verify onLogin was called
-      expect(mockOnLogin).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(mockOnLogin).toHaveBeenCalledTimes(1);
+      });
     });
 
     test('stores user data in localStorage on successful login', async () => {
-      const mockUser = {
-        id: 2,
-        username: 'testuser',
-        email: 'test@example.com',
-        token: 'test-token-67890'
-      };
+      const mockUser = { id: 2, username: 'testuser' };
       
-      login.mockResolvedValueOnce({ data: mockUser });
-      
-      // Mock localStorage
-      Storage.prototype.setItem = jest.fn();
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser, token: 'test-token' })
+      });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
-        expect(mockOnLogin).toHaveBeenCalled();
+        expect(localStorage.getItem('token')).toBeTruthy();
+        expect(localStorage.getItem('user')).toBeTruthy();
       });
     });
 
-    test('handles remember me functionality with mocked service', async () => {
-      const mockUser = {
-        id: 3,
-        username: 'rememberuser',
-        email: 'remember@example.com',
-        token: 'remember-token'
-      };
+    test('handles remember me functionality', async () => {
+      const mockUser = { id: 3, username: 'rememberuser' };
       
-      login.mockResolvedValueOnce({ data: mockUser });
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser, token: 'remember-token' })
+      });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
       const rememberCheckbox = screen.getByRole('checkbox');
       const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
       
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
       await userEvent.click(rememberCheckbox);
       await userEvent.click(submitButton);
       
-      expect(mockOnLogin).toHaveBeenCalled();
-      expect(rememberCheckbox).toBeChecked();
+      await waitFor(() => {
+        expect(mockOnLogin).toHaveBeenCalled();
+        expect(rememberCheckbox).toBeChecked();
+      });
     });
 
-    test('redirects to dashboard after successful login', async () => {
-      const mockUser = {
-        id: 4,
-        username: 'dashuser',
-        email: 'dash@example.com',
-        token: 'dash-token'
-      };
+    test('redirects to product page after successful login', async () => {
+      const mockUser = { id: 4, username: 'dashuser' };
       
-      login.mockResolvedValueOnce({ data: mockUser });
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: mockUser, token: 'dash-token' })
+      });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
         expect(mockOnLogin).toHaveBeenCalledTimes(1);
@@ -131,315 +115,156 @@ describe('Login Component Mock Tests', () => {
     });
   });
 
-  // Test với mocked failed responses
   describe('Test with Mocked Failed Responses', () => {
     
     test('handles 401 Unauthorized error', async () => {
-      // Mock 401 error response
-      login.mockRejectedValueOnce({
-        response: {
-          status: 401,
-          data: { message: 'Sai tài khoản hoặc mật khẩu' }
-        }
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        json: async () => ({ message: 'Invalid credentials' })
       });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'wrong@example.com');
-      await userEvent.type(passwordInput, 'WrongPass');
-      await userEvent.click(submitButton);
+      await userEvent.type(screen.getByLabelText(/Username/i), 'wrong');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'WrongPass');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
-        expect(screen.getByText(/Sai tài khoản hoặc mật khẩu/i)).toBeInTheDocument();
+        expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
       });
-      
       expect(mockOnLogin).not.toHaveBeenCalled();
     });
 
-    test('handles 404 Not Found error', async () => {
-      login.mockRejectedValueOnce({
-        response: {
-          status: 404,
-          data: { message: 'User không tồn tại' }
-        }
-      });
+    test('handles network error gracefully', async () => {
+      global.fetch.mockRejectedValueOnce(new Error('Network Error'));
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
+      await userEvent.type(screen.getByLabelText(/Username/i), 'test');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Test123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
-      await userEvent.type(emailInput, 'notfound@example.com');
-      await userEvent.type(passwordInput, 'Pass123');
-      await userEvent.click(submitButton);
-      
-      expect(mockOnLogin).not.toHaveBeenCalled();
-    });
-
-    test('handles 500 Internal Server Error', async () => {
-      login.mockRejectedValueOnce({
-        response: {
-          status: 500,
-          data: { message: 'Internal Server Error' }
-        }
+      await waitFor(() => {
+        expect(screen.getByText(/Login failed/i)).toBeInTheDocument();
       });
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.type(passwordInput, 'Test123');
-      await userEvent.click(submitButton);
-      
-      expect(mockOnLogin).not.toHaveBeenCalled();
-    });
-
-    test('handles network error', async () => {
-      login.mockRejectedValueOnce(new Error('Network Error'));
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.type(passwordInput, 'Test123');
-      await userEvent.click(submitButton);
-      
-      expect(mockOnLogin).not.toHaveBeenCalled();
-    });
-
-    test('handles timeout error', async () => {
-      login.mockRejectedValueOnce({
-        code: 'ECONNABORTED',
-        message: 'timeout of 5000ms exceeded'
-      });
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.type(passwordInput, 'Test123');
-      await userEvent.click(submitButton);
-      
       expect(mockOnLogin).not.toHaveBeenCalled();
     });
   });
 
-  // Verify mock calls
-  describe('Verify Mock Calls', () => {
+  describe('Verify Mock Behavior', () => {
     
-    test('verifies authService.login is called with correct parameters', async () => {
-      login.mockResolvedValueOnce({
-        data: { id: 1, username: 'test', token: 'token' }
+    test('verifies fetch is called with correct parameters', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: { id: 1, username: 'admin' }, token: 'token' })
       });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
-      
-      // Verify mock was called
-      expect(mockOnLogin).toHaveBeenCalledTimes(1);
-    });
-
-    test('verifies authService.login is called only once per submission', async () => {
-      login.mockResolvedValueOnce({
-        data: { id: 1, username: 'test', token: 'token' }
-      });
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
-      
-      // Should be called exactly once
-      expect(mockOnLogin).toHaveBeenCalledTimes(1);
-    });
-
-    test('verifies authService.login is not called with empty fields', async () => {
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      await userEvent.click(submitButton);
-      
-      // Should not be called
-      expect(login).not.toHaveBeenCalled();
-      expect(mockOnLogin).not.toHaveBeenCalled();
-    });
-
-    test('verifies mock call count after multiple failed attempts', async () => {
-      login.mockRejectedValue({
-        response: { status: 401, data: { message: 'Sai mật khẩu' } }
-      });
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      // First attempt
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.type(passwordInput, 'Wrong1');
-      await userEvent.click(submitButton);
-      
-      // Clear and second attempt
-      await userEvent.clear(passwordInput);
-      await userEvent.type(passwordInput, 'Wrong2');
-      await userEvent.click(submitButton);
-      
-      // Clear and third attempt
-      await userEvent.clear(passwordInput);
-      await userEvent.type(passwordInput, 'Wrong3');
-      await userEvent.click(submitButton);
-      
-      // onLogin should never be called
-      expect(mockOnLogin).not.toHaveBeenCalled();
-    });
-
-    test('verifies mock implementation with specific arguments', async () => {
-      const mockLoginFn = jest.fn().mockResolvedValue({
-        data: { id: 5, username: 'specific', token: 'specific-token' }
-      });
-      
-      login.mockImplementation(mockLoginFn);
-      
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
-        expect(mockOnLogin).toHaveBeenCalled();
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://localhost:8080/api/auth/login',
+          expect.objectContaining({
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          })
+        );
       });
     });
 
-    test('verifies no mock calls when validation fails', async () => {
+    test('verifies fetch is called only once per submission', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: { id: 1, username: 'admin' }, token: 'token' })
+      });
+      
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      // Only fill email, leave password empty
-      const emailInput = screen.getByLabelText(/Email/i);
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
-      await userEvent.type(emailInput, 'test@example.com');
-      await userEvent.click(submitButton);
-      
-      // Verify no API call was made
-      expect(login).not.toHaveBeenCalled();
-      expect(mockOnLogin).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+      });
     });
 
-    test('clears all mocks between tests', () => {
-      // This test verifies that mocks are properly cleared
-      expect(login).not.toHaveBeenCalled();
+    test('verifies fetch is not called with empty fields', async () => {
+      const mockOnLogin = jest.fn();
+      render(<Login onLogin={mockOnLogin} />);
       
-      // All previous test calls should be cleared
-      expect(login).toHaveBeenCalledTimes(0);
+      // Click submit without filling fields
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
+      
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(mockOnLogin).not.toHaveBeenCalled();
     });
   });
 
-  describe('Additional Mock Testing Scenarios', () => {
+  describe('Additional Scenarios', () => {
     
-    test('mocks consecutive login attempts', async () => {
+    test('handles consecutive login attempts', async () => {
       // First attempt fails
-      login.mockRejectedValueOnce({
-        response: { status: 401, data: { message: 'Sai mật khẩu' } }
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ message: 'Invalid credentials' })
       });
       
       // Second attempt succeeds
-      login.mockResolvedValueOnce({
-        data: { id: 6, username: 'retry', token: 'retry-token' }
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: { id: 1, username: 'admin' }, token: 'token' })
       });
       
       const mockOnLogin = jest.fn();
       render(<Login onLogin={mockOnLogin} />);
       
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      // First attempt
-      await userEvent.type(emailInput, 'retry@example.com');
-      await userEvent.type(passwordInput, 'WrongPass');
-      await userEvent.click(submitButton);
-      
-      expect(mockOnLogin).not.toHaveBeenCalled();
-      
-      // Second attempt
-      await userEvent.clear(emailInput);
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.clear(passwordInput);
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
+      // First attempt - wrong password
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Wrong');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
-        expect(mockOnLogin).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    test('mocks different response times', async () => {
-      // Simulate slow response
-      login.mockImplementation(() => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({ data: { id: 7, username: 'slow', token: 'slow-token' } });
-          }, 100);
-        });
+        expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
       });
       
-      const mockOnLogin = jest.fn();
-      render(<Login onLogin={mockOnLogin} />);
-      
-      const emailInput = screen.getByLabelText(/Email/i);
-      const passwordInput = screen.getByLabelText(/Mật khẩu/i, { selector: 'input' });
-      const submitButton = screen.getByRole('button', { name: /Đăng nhập/i });
-      
-      await userEvent.type(emailInput, 'admin@example.com');
-      await userEvent.type(passwordInput, 'Admin123');
-      await userEvent.click(submitButton);
+      // Second attempt - correct password
+      await userEvent.clear(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }));
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
       
       await waitFor(() => {
         expect(mockOnLogin).toHaveBeenCalled();
-      }, { timeout: 2000 });
+      });
+    });
+
+    test('clears error message on successful login', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ user: { id: 1, username: 'admin' }, token: 'token' })
+      });
+      
+      const mockOnLogin = jest.fn();
+      render(<Login onLogin={mockOnLogin} />);
+      
+      await userEvent.type(screen.getByLabelText(/Username/i), 'admin');
+      await userEvent.type(screen.getByLabelText(/Mật khẩu/i, { selector: 'input' }), 'Admin123');
+      await userEvent.click(screen.getByRole('button', { name: /Đăng nhập/i }));
+      
+      await waitFor(() => {
+        // Error message should not be visible on successful login
+        const errorMessages = screen.queryAllByText(/Login failed|Invalid/i);
+        expect(errorMessages.length).toBe(0);
+      });
     });
   });
 });
