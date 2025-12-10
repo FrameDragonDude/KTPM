@@ -11,20 +11,25 @@ on:
   workflow_dispatch:
 
 env:
-  POSTGRES_DB: testdb
-  POSTGRES_PASSWORD: password
+  MYSQL_DATABASE: testdb
+  MYSQL_ROOT_PASSWORD: password
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:14
+      mysql:
+        image: mysql:8.0
         env:
-          POSTGRES_DB: testdb
-          POSTGRES_PASSWORD: password
+          MYSQL_DATABASE: testdb
+          MYSQL_ROOT_PASSWORD: password
         ports:
-          - 5432:5432
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v2

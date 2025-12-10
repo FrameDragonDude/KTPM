@@ -58,7 +58,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        // Temporary: Plain text password check for existing DB users
+        if (!user.getPassword().equals(password) && !passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Sai mật khẩu");
         }
 

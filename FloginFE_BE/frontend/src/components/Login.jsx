@@ -174,7 +174,7 @@ const Login = ({ onLogin = () => {} }) => {
         <button id="loginBtn" type="submit" className="login-btn" disabled={loading}>
           {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
-        <div className="login-demo">Demo: admin / Admin123</div>
+        <div className="login-demo">Demo: admin / admin1</div>
       </form>
     </div>
   );

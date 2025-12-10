@@ -16,6 +16,18 @@ public class AppConfig {
     @Value("${app.default.name}")
     private String name;
 
+    public String getDefaultUsername() {
+        return username;
+    }
+
+    public String getDefaultPassword() {
+        return password;
+    }
+
+    public String getDefaultName() {
+        return name;
+    }
+
     public UserDTO getDefaultUser() {
         return UserDTO.builder()
                 .id(1)
