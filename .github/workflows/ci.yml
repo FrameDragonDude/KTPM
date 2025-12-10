@@ -54,6 +54,36 @@ jobs:
           npm ci
           npm test -- --watchAll=false --coverage
 
+      - name: Start Backend
+        run: |
+          cd FloginFE_BE/backend
+          mvn -B -ntp spring-boot:run -DskipTests &
+          sleep 10
+        continue-on-error: true
+
+      - name: Wait for Backend
+        run: |
+          timeout=60
+          while [ $timeout -gt 0 ]; do
+            if curl -s http://localhost:8080/actuator/health > /dev/null 2>&1; then
+              echo "Backend is ready"
+              exit 0
+            fi
+            echo "Waiting for backend... ($timeout seconds left)"
+            sleep 2
+            timeout=$((timeout - 2))
+          done
+          echo "Backend failed to start"
+          exit 1
+        continue-on-error: true
+
+      - name: Start Frontend Dev Server
+        run: |
+          cd FloginFE_BE/frontend
+          npm start &
+          sleep 10
+        continue-on-error: true
+
       - name: E2E Tests
         run: |
           cd FloginFE_BE/frontend
