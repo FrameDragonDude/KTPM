@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Product from './components/Product';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(() => {
+    return localStorage.getItem('loggedIn') === 'true';
+  });
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  useEffect(() => {
+    localStorage.setItem('loggedIn', loggedIn);
+  }, [loggedIn]);
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });

@@ -11,13 +11,19 @@ class ProductPage {
   }
 
   fillProductForm(product) {
-    cy.get('[data-testid="product-name"]').type(product.name);
-    cy.get('[data-testid="product-price"]').type(product.price);
-    cy.get('[data-testid="product-quantity"]').type(product.quantity);
+    cy.get('[data-testid="product-name-input"]').type(product.name);
+    if (product.description) {
+      cy.get('[data-testid="product-desc-input"]').type(product.description);
+    }
+    cy.get('[data-testid="product-price-input"]').type(product.price);
+    cy.get('[data-testid="product-stock-input"]').type(product.quantity);
+    if (product.category) {
+      cy.get('[data-testid="product-category-input"]').type(product.category);
+    }
   }
 
   submitForm() {
-    cy.get('[data-testid="submit-btn"]').click();
+    cy.get('[data-testid="product-submit-btn"]').click();
   }
 
   getSuccessMessage() {

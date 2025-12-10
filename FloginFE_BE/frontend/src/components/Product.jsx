@@ -176,11 +176,12 @@ const categories = Array.from(new Set(products.map(p => p.category))).filter(Boo
         </div>
         <div className="product-list-header">
           <div className="product-list-title">Danh sách sản phẩm</div>
-          <button className="add-btn" onClick={handleAddProduct}>+ Thêm sản phẩm</button>
+          <button className="add-btn" data-testid="add-product-btn" onClick={handleAddProduct}>+ Thêm sản phẩm</button>
         </div>
         <div className="product-list-filter">
           <input
             className="search-input"
+            data-testid="search-input"
             type="text"
             placeholder="Tìm kiếm sản phẩm theo tên hoặc mô tả..."
             value={search}
@@ -224,7 +225,7 @@ const categories = Array.from(new Set(products.map(p => p.category))).filter(Boo
                // Tìm index thực trong mảng products
                const realIdx = products.findIndex(pr => pr.name === p.name && pr.desc === p.desc && pr.price === p.price && pr.stock === p.stock && pr.category === p.category);
                return (
-                 <tr key={idx}>
+                 <tr key={idx} data-testid="product-item">
                    <td>
                      <div className="product-name">{p.name}</div>
                      <div className="product-desc">{p.desc}</div>
@@ -232,9 +233,9 @@ const categories = Array.from(new Set(products.map(p => p.category))).filter(Boo
                    <td>
                      <span className={`category-badge ${p.category === 'Điện tử' ? 'blue' : 'purple'}`}>{p.category}</span>
                    </td>
-                   <td>${p.price.toFixed(2)}</td>
+                   <td data-testid="product-price">${p.price.toFixed(2)}</td>
                    <td>
-                     <span className="stock-badge">{p.stock} cái</span>
+                     <span className="stock-badge" data-testid="product-quantity">{p.stock} cái</span>
                    </td>
                    <td>
                      <span className="action-icon edit" title="Sửa" onClick={() => handleEditProduct(realIdx)}>✏️</span>
@@ -254,29 +255,29 @@ const categories = Array.from(new Set(products.map(p => p.category))).filter(Boo
                       <form className="modal-form" onSubmit={handleEditSubmit}>
                         <div className="modal-group">
                           <label>Tên sản phẩm</label>
-                          <input name="name" value={editProduct.name} onChange={handleEditChange} placeholder="Nhập tên sản phẩm" />
+                          <input name="name" data-testid="product-name-input" value={editProduct.name} onChange={handleEditChange} placeholder="Nhập tên sản phẩm" />
                         </div>
                         <div className="modal-group">
                           <label>Mô tả</label>
-                          <input name="desc" value={editProduct.desc} onChange={handleEditChange} placeholder="Nhập mô tả sản phẩm" />
+                          <input name="desc" data-testid="product-desc-input" value={editProduct.desc} onChange={handleEditChange} placeholder="Nhập mô tả sản phẩm" />
                         </div>
                         <div className="modal-row">
                           <div className="modal-group">
                             <label>Giá ($)</label>
-                            <input name="price" type="number" min="0" step="0.01" value={editProduct.price} onChange={handleEditChange} placeholder="0.00" />
+                            <input name="price" data-testid="product-price-input" type="number" min="0" step="0.01" value={editProduct.price} onChange={handleEditChange} placeholder="0.00" />
                           </div>
                           <div className="modal-group">
                             <label>Tồn kho</label>
-                            <input name="stock" type="number" min="0" value={editProduct.stock} onChange={handleEditChange} placeholder="0" />
+                            <input name="stock" data-testid="product-stock-input" type="number" min="0" value={editProduct.stock} onChange={handleEditChange} placeholder="0" />
                           </div>
                         </div>
                         <div className="modal-group">
                           <label>Danh mục</label>
-                          <input name="category" value={editProduct.category} onChange={handleEditChange} placeholder="Nhập danh mục" />
+                          <input name="category" data-testid="product-category-input" value={editProduct.category} onChange={handleEditChange} placeholder="Nhập danh mục" />
                         </div>
                         <div className="modal-actions">
                           <button type="button" className="modal-cancel" onClick={()=>setEditIndex(null)}>Hủy</button>
-                          <button type="submit" className="modal-submit">Cập nhật sản phẩm</button>
+                          <button type="submit" data-testid="product-submit-btn" className="modal-submit">Cập nhật sản phẩm</button>
                         </div>
                       </form>
                     </div>
@@ -299,36 +300,36 @@ const categories = Array.from(new Set(products.map(p => p.category))).filter(Boo
             <form className="modal-form" onSubmit={handleModalSubmit}>
               <div className="modal-group">
                 <label>Tên sản phẩm</label>
-                <input name="name" value={newProduct.name} onChange={handleModalChange} placeholder="Nhập tên sản phẩm" />
+                <input name="name" data-testid="product-name-input" value={newProduct.name} onChange={handleModalChange} placeholder="Nhập tên sản phẩm" />
               </div>
               <div className="modal-group">
                 <label>Mô tả</label>
-                <input name="desc" value={newProduct.desc} onChange={handleModalChange} placeholder="Nhập mô tả sản phẩm" />
+                <input name="desc" data-testid="product-desc-input" value={newProduct.desc} onChange={handleModalChange} placeholder="Nhập mô tả sản phẩm" />
               </div>
               <div className="modal-row">
                 <div className="modal-group">
                   <label>Giá ($)</label>
-                  <input name="price" type="number" min="0" step="0.01" value={newProduct.price} onChange={handleModalChange} placeholder="0.00" />
+                  <input name="price" data-testid="product-price-input" type="number" min="0" step="0.01" value={newProduct.price} onChange={handleModalChange} placeholder="0.00" />
                 </div>
                 <div className="modal-group">
                   <label>Tồn kho</label>
-                  <input name="stock" type="number" min="0" value={newProduct.stock} onChange={handleModalChange} placeholder="0" />
+                  <input name="stock" data-testid="product-stock-input" type="number" min="0" value={newProduct.stock} onChange={handleModalChange} placeholder="0" />
                 </div>
               </div>
               <div className="modal-group">
                 <label>Danh mục</label>
-                <input name="category" value={newProduct.category} onChange={handleModalChange} placeholder="Nhập danh mục" />
+                <input name="category" data-testid="product-category-input" value={newProduct.category} onChange={handleModalChange} placeholder="Nhập danh mục" />
               </div>
               <div className="modal-actions">
                 <button type="button" className="modal-cancel" onClick={()=>setShowModal(false)}>Hủy</button>
-                <button type="submit" className="modal-submit">Thêm sản phẩm</button>
+                <button type="submit" data-testid="product-submit-btn" className="modal-submit">Thêm sản phẩm</button>
               </div>
             </form>
           </div>
         </div>
       )}
       {toast.show && (
-        <div className="toast-popup">
+        <div className="toast-popup" data-testid="success-message">
           <div className="toast-content" style={{background:'#065f46',color:'#fff'}}>
             <span style={{fontSize:20,marginRight:8}}>✔️</span>
             <div>

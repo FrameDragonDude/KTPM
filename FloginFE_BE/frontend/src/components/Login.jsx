@@ -8,18 +8,51 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Vui lòng nhập đầy đủ thông tin.');
+    
+    // Validation
+    if (!email) {
+      setError('Email is required');
       return;
     }
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+    if (!password) {
+      setError('Password is required');
+      return;
+    }
+
     setError('');
-    // Demo: chỉ cần đúng tài khoản mẫu là đăng nhập thành công
-    if (email === 'admin@example.com' && password === 'Admin123') {
-      onLogin();
-    } else {
-      setError('Sai tài khoản hoặc mật khẩu.');
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        // Redirect to dashboard
+        window.location.href = '/dashboard';
+      } else {
+        setError('Invalid credentials');
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.');
+      console.error('Login error:', err);
     }
   };
 
@@ -32,14 +65,14 @@ const Login = ({ onLogin }) => {
         <h2>Hệ Thống Quản Lý Sản Phẩm</h2>
         <p className="login-desc">Đăng nhập để quản lý kho hàng của bạn</p>
         <div className="login-group">
-            <label htmlFor="email-input">Email</label>
-            <input id="email-input" type="email" placeholder="admin@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" placeholder="admin@example.com" value={email} onChange={e => setEmail(e.target.value)} />
         </div>
         <div className="login-group">
-            <label htmlFor="password-input">Mật khẩu</label>
+            <label htmlFor="password">Mật khẩu</label>
             <div style={{position:'relative'}}>
               <input
-                id="password-input"
+                id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Nhập mật khẩu của bạn"
                 value={password}
@@ -64,8 +97,8 @@ const Login = ({ onLogin }) => {
           </label>
           <button type="button" className="forgot" style={{background:'none',border:'none',padding:0,cursor:'pointer',color:'#4f6ef7'}} onClick={()=>alert('Chức năng chưa hỗ trợ')}>Quên mật khẩu?</button>
         </div>
-        {error && <div className="login-error">{error}</div>}
-        <button type="submit" className="login-btn">Đăng nhập</button>
+        {error && <div className="error-message login-error">{error}</div>}
+        <button type="submit" id="loginBtn" className="login-btn">Đăng nhập</button>
         <div className="login-demo">Demo: admin@example.com / Admin123</div>
       </form>
     </div>

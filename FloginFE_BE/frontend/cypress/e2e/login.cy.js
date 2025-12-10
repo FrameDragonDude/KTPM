@@ -13,12 +13,12 @@ describe('Login E2E Tests', () => {
       statusCode: 200,
       body: {
         token: 'dummy-jwt-token',
-        user: { email: 'test@example.com' }
+        user: { email: 'admin@example.com' }
       }
     }).as('loginRequest');
 
-    cy.get('#email').type('test@example.com');
-    cy.get('#password').type('123456');
+    cy.get('#email').type('admin@example.com');
+    cy.get('#password').type('Admin123');
     cy.get('#loginBtn').click();
 
     cy.wait('@loginRequest');
@@ -31,11 +31,17 @@ describe('Login E2E Tests', () => {
     cy.get('#loginBtn').click();
 
     cy.get('.error-message').should('contain', 'Email is required');
+  });
+
+  it('should show password required error', () => {
+    cy.get('#email').type('test@example.com');
+    cy.get('#loginBtn').click();
+
     cy.get('.error-message').should('contain', 'Password is required');
   });
 
   it('should show email format error', () => {
-    cy.get('#email').type('invalid_email');
+    cy.get('#email').type('invalid@email');
     cy.get('#password').type('123456');
     cy.get('#loginBtn').click();
 

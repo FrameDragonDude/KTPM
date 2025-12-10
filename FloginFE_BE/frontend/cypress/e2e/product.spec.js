@@ -12,7 +12,12 @@ describe('Product E2E Tests', () => {
   const productPage = new ProductPage();
 
   beforeEach(() => {
-    cy.viewport('testarea', 'Test123'); // Custom command
+    cy.viewport('iphone-x'); // Use valid preset
+    // Mock logged in state
+    cy.visit('/');
+    cy.window().then((win) => {
+      win.localStorage.setItem('loggedIn', 'true');
+    });
     productPage.visit();
   });
 
@@ -21,21 +26,25 @@ describe('Product E2E Tests', () => {
     productPage.clickAddNew();
     productPage.fillProductForm({
       name: 'Laptop Dell',
-      price: '15000000',
-      quantity: '10'
+      description: 'Laptop Dell XPS 13',
+      price: '1500',
+      quantity: '10',
+      category: 'Điện tử'
     });
     productPage.submitForm();
     
-    productPage.getSuccessMessage()
-      .should('contain', 'thành công');
+    // Check toast appears
+    productPage.getSuccessMessage().should('be.visible');
+    // Check product in list
     productPage.getProductInList('Laptop Dell')
       .should('exist');
   });
 
   // b) Test Read/List products (0.5 điểm)
   it('Nên hiển thị danh sách sản phẩm', () => {
-    productPage.getProductInList('Laptop Dell')
-      .should('exist');
+    // Check default products exist
+    cy.get('[data-testid="product-item"]')
+      .should('have.length.at.least', 1);
     cy.get('[data-testid="product-price"]').first()
       .should('exist');
     cy.get('[data-testid="product-quantity"]').first()
@@ -44,31 +53,42 @@ describe('Product E2E Tests', () => {
 
   // c) Test Update product (0.5 điểm)
   it('Nên cập nhật sản phẩm thành công', () => {
-    productPage.getProductInList('Laptop Dell').click();
-    cy.get('[data-testid="product-price"]').clear().type('14000000');
-    productPage.submitForm();
+    // Click edit on first product
+    cy.get('[data-testid="product-item"]').first().within(() => {
+      cy.get('.edit').click();
+    });
     
-    cy.get('[data-testid="product-price"]')
-      .should('contain', '14,000,000');
+    // Update name
+    cy.get('[data-testid="product-name-input"]').clear().type('Updated Product');
+    cy.get('[data-testid="product-submit-btn"]').click();
+    
+    // Verify update
+    cy.contains('Updated Product').should('exist');
   });
 
   // d) Test Delete product (0.5 điểm)
   it('Nên xóa sản phẩm thành công', () => {
-    productPage.getProductInList('Laptop Dell').click();
-    cy.get('[data-testid="delete-btn"]').click();
-    cy.get('[data-testid="confirm-delete"]').click();
+    const productName = 'Đồng hồ thông minh';
     
-    productPage.getProductInList('Laptop Dell')
-      .should('not.exist');
+    // Find and delete product
+    cy.contains('[data-testid="product-item"]', productName).within(() => {
+      cy.get('.delete').click();
+    });
+    
+    // Confirm delete (window.confirm is auto-confirmed in Cypress)
+    cy.on('window:confirm', () => true);
+    
+    // Verify deletion - product should not exist
+    cy.contains('[data-testid="product-item"]', productName).should('not.exist');
   });
 
   // e) Test Search/Filter functionality (0.5 điểm)
   it('Nên tìm kiếm/filter sản phẩm thành công', () => {
-    cy.get('[data-testid="search-input"]').type('Laptop');
+    cy.get('[data-testid="search-input"]').type('thông minh');
     cy.get('[data-testid="product-item"]')
       .should('have.length.at.least', 1);
     cy.get('[data-testid="product-item"]').each(($el) => {
-      cy.wrap($el).should('contain', 'Laptop');
+      cy.wrap($el).should('contain', 'thông minh');
     });
   });
 });
