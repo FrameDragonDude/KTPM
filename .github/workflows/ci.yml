@@ -78,7 +78,7 @@ jobs:
       - name: Start Backend
         run: |
           cd FloginFE_BE/backend
-          mvn -B -ntp spring-boot:run -Dspring.profiles.active=ci -DskipTests &
+          mvn -B -ntp clean spring-boot:run -Dspring.profiles.active=ci -DskipTests &
           sleep 10
         continue-on-error: true
 
