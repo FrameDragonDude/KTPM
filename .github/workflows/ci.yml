@@ -13,6 +13,7 @@ on:
 env:
   MYSQL_DATABASE: KTPM
   MYSQL_ROOT_PASSWORD: 19092005
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   test:
@@ -91,7 +92,9 @@ jobs:
         continue-on-error: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           files: ./FloginFE_BE/frontend/coverage/lcov.info,./FloginFE_BE/backend/target/site/jacoco/jacoco.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
         continue-on-error: true
